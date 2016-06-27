@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "663395727159",
+    "firebase_url": "https://mis-atm.firebaseio.com",
+    "project_id": "mis-atm",
+    "storage_bucket": "mis-atm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:663395727159:android:260bed432d66b633",
+        "android_client_info": {
+          "package_name": "com.example.admin.projectt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "663395727159-0qlb2em5a2pupt5hn8ghjdeeirhti9du.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9a7x_2eUsWZRBx-Ok9hWlwDC9Z_OaJQQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
