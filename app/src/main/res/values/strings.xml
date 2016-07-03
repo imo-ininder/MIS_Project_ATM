@@ -24,5 +24,12 @@
     <string name="paid_tv">報酬</string>
     <string name="describe">描述</string>
     <string name="OUTPUT">送出</string>
+    <string name="title_activity_about_page">about_page</string>
+
+
+
+
+
+
 
 </resources>

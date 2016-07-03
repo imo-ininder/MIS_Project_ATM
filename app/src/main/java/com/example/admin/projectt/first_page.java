@@ -22,6 +22,13 @@ public class first_page extends AppCompatActivity {
         Intent it =new Intent(this,sign_up.class);
         startActivity(it);
     }
+
+    public void gotomainpage(View view){
+        Intent it =new Intent(this,main_page.class);
+        startActivity(it);
+    }
+
+
     public void pwd_help(View view){
 
     }

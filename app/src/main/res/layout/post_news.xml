@@ -37,38 +37,38 @@
         </LinearLayout>
 
         <!--<RadioButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/snap"-->
-            <!--android:id="@+id/radioButton"-->
-            <!--android:checked="false" />-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/snap"-->
+        <!--android:id="@+id/radioButton"-->
+        <!--android:checked="false" />-->
 
         <!--<LinearLayout-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/t">-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/t">-->
 
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
-                <!--android:text="@string/missiontime"-->
-                <!--android:id="@+id/textView" />-->
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+        <!--android:text="@string/missiontime"-->
+        <!--android:id="@+id/textView" />-->
 
-            <!--<EditText-->
-                <!--android:layout_width="148dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:inputType="time"-->
-                <!--android:ems="10"-->
-                <!--android:id="@+id/missiondate" />-->
+        <!--<EditText-->
+        <!--android:layout_width="148dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="time"-->
+        <!--android:ems="10"-->
+        <!--android:id="@+id/missiondate" />-->
 
-            <!--<EditText-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:inputType="date"-->
-                <!--android:ems="10"-->
-                <!--android:id="@+id/missiontime" />-->
+        <!--<EditText-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="date"-->
+        <!--android:ems="10"-->
+        <!--android:id="@+id/missiontime" />-->
         <!--</LinearLayout>-->
 
         <LinearLayout
@@ -93,23 +93,23 @@
         </LinearLayout>
 
         <!--<LinearLayout-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="61dp"-->
-            <!--android:id="@+id/P">-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="61dp"-->
+        <!--android:id="@+id/P">-->
 
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
-                <!--android:text="@string/paid_tv"-->
-                <!--android:id="@+id/textView3" />-->
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+        <!--android:text="@string/paid_tv"-->
+        <!--android:id="@+id/textView3" />-->
 
-            <!--<EditText-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/missionPAY"-->
-                <!--android:layout_weight="1" />-->
+        <!--<EditText-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/missionPAY"-->
+        <!--android:layout_weight="1" />-->
         <!--</LinearLayout>-->
 
         <TextView
