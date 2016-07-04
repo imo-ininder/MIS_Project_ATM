@@ -28,14 +28,14 @@ public class sign_up extends AppCompatActivity {
                 EditText nicknamee=(EditText)findViewById(R.id.edit_nickname);
                 EditText emaill=(EditText)findViewById(R.id.edit_pwd_hint);
                 EditText pwdhintt=(EditText)findViewById(R.id.edit_email);
-                Intent it = new Intent();
-                it.setClass( sign_up.this, about_page.class );
-                Bundle information = new Bundle();
-                information.putString("nickname", nicknamee.getText().toString());
-                information.putString("email", emaill.getText().toString());
-                information.putString("pwdhint",  pwdhintt.getText().toString());
-                it.putExtras(information);
-                startActivity(it);
+                Intent it = new Intent(sign_up.this, about_page.class );
+
+                Bundle information = new Bundle();                                        //送個人資訊要用到的information
+                information.putString("nickname", nicknamee.getText().toString());        //把綽號放進去bundle，識別碼是nickname
+                information.putString("email", emaill.getText().toString());              //把電子信箱放進去bundle，識別碼是email
+                information.putString("pwdhint",  pwdhintt.getText().toString());         //把密碼提示放進去bundle，識別碼是pwdhint
+                it.putExtras(information);                                                //把bundle放進去intent
+                startActivity(it);                                                        //傳送intent
             }
         });
     }

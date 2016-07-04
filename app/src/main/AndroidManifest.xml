@@ -28,7 +28,8 @@
         <activity android:name=".about_page" />
         <activity android:name=".main_page" />
         <activity android:name=".post_news" />
-        <activity android:name=".messagecenter"></activity>
+        <activity android:name=".messagecenter" />
+        <activity android:name=".message"></activity>
     </application>
 
 </manifest>
