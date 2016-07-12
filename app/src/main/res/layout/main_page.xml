@@ -7,23 +7,4 @@
     android:weightSum="1"
     tools:context=".main_page">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Post Task"
-        android:id="@+id/testBtn1"
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Strat Service"
-        android:id="@+id/testBtn2"
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Service"
-        android:id="@+id/testBtn3" />
 </LinearLayout>

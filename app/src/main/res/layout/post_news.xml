@@ -32,7 +32,7 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/taskTitle"
+                android:id="@+id/task_name"
                 android:layout_weight="1" />
         </LinearLayout>
 
@@ -88,10 +88,29 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/taskLocation"
+                android:id="@+id/Location"
                 android:layout_weight="1" />
         </LinearLayout>
 
+        <!--<LinearLayout-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="61dp"-->
+            <!--android:id="@+id/P">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+                <!--android:text="@string/paid_tv"-->
+                <!--android:id="@+id/textView3" />-->
+
+            <!--<EditText-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/missionPAY"-->
+                <!--android:layout_weight="1" />-->
+        <!--</LinearLayout>-->
 
         <TextView
             android:layout_width="wrap_content"
@@ -105,7 +124,7 @@
             android:layout_height="0dp"
             android:inputType="textMultiLine"
             android:ems="10"
-            android:id="@+id/taskContent"
+            android:id="@+id/missionDescribtion"
             android:layout_weight="0.70" />
 
     </LinearLayout>
@@ -114,7 +133,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/OUTPUT"
-        android:id="@+id/btn_submit_task"
+        android:id="@+id/bt_submit_task"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />

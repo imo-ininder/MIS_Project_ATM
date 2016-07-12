@@ -5,14 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.content.Intent;
 
+import com.firebase.client.Firebase;
 
 public class first_page extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
         setContentView(R.layout.first_page_layout);
-
 
 
     }
