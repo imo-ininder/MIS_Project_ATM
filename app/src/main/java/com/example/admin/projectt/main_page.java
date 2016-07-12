@@ -5,21 +5,36 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.content.Intent;
+import android.widget.Button;
 
 public class main_page extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
-
-//        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent();
-//                intent.setClass(main_page.this, post_news.class);
-//                startActivity(intent);
-//            }
-//        });
+        final Intent intent = new Intent();
+        final Button button = (Button) findViewById(R.id.testBtn1);
+        final Button button2 = (Button) findViewById(R.id.testBtn2);
+        final Button button3 = (Button) findViewById(R.id.testBtn3);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(main_page.this,SendRequest.class);
+                startActivity(i);
+            }
+        });
+        button2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Bundle b = new Bundle();
+                b.putBoolean("flag", true);
+                intent.putExtras(b);
+                intent.setClass(main_page.this, RetrievePostService.class);
+                startService(intent);
+            }
+        });
+        button3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                stopService(intent);
+            }
+        });
     }
 }
