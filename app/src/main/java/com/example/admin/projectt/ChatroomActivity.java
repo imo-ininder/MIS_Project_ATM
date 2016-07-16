@@ -31,8 +31,7 @@ public class ChatroomActivity extends AppCompatActivity {
         setting  = getSharedPreferences("LoginData",0);
 
         ref     = new Firebase("https://mis-atm.firebaseio.com/chat");
-        //chatRef = ref.child(chatData.getString("path",""));
-        chatRef = ref.child("testChatRoom");
+        chatRef = ref.child(chatData.getString("path",""));
         et      = (EditText)findViewById(R.id.chatEditText);
 
         tvTitle   = (TextView)findViewById(R.id.chatroomTitle);
@@ -66,6 +65,7 @@ public class ChatroomActivity extends AppCompatActivity {
                 chatData.edit().putString("path","")
                         .putString("title","")
                         .putBoolean("chatState",false).apply();
+                ref.child("cancel").setValue("Bye Bye");
                 Intent i = new Intent(ChatroomActivity.this,main_page.class);
                 startActivity(i);
                 finish();
@@ -79,12 +79,15 @@ public class ChatroomActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        //Firebase chatRef = ref.child(chatData.getString("path",""));
         chatRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Message m = dataSnapshot.getValue(Message.class);
-                tvContent.append(m.getAuthor()+":"+m.getMessage()+"\n");
+                if(dataSnapshot.getKey().equals("cancel")){
+                    chatRef.removeValue();
+                }else {
+                    Message m = dataSnapshot.getValue(Message.class);
+                    tvContent.append(m.getAuthor() + ":" + m.getMessage() + "\n");
+                }
             }
 
             @Override
