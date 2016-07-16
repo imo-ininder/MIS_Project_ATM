@@ -73,8 +73,6 @@ public class first_page extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot d:dataSnapshot.getChildren()) {
-                        Log.d("DEBUG",d.child(param[0]).getValue().toString());
-                        Log.d("DEBUG",d.child(param[1]).getValue().toString());
                         if(!d.child(param[0]).getValue().toString().equals(param[2])){
                             loginFlag = false;
                         }else{
@@ -105,16 +103,16 @@ public class first_page extends AppCompatActivity {
         protected void onPostExecute(Boolean b){
             pd.dismiss();
             if(loginFlag){
-                    SharedPreferences setting = getSharedPreferences("LoginData",0);
-                    setting.edit().putString("email",userData.getEmail())
-                            .putString("id",userData.getId())
-                            .putString("name",userData.getName())
-                            .putString("gender",userData.getGender())
-                            .putString("CONFIRM","SUCCESS")
-                            .commit();
-                    Intent i = new Intent(first_page.this,main_page.class);
-                    startActivity(i);
-                    first_page.this.finish();
+                SharedPreferences setting = getSharedPreferences("LoginData",0);
+                setting.edit().putString("email",userData.getEmail())
+                        .putString("id",userData.getId())
+                        .putString("name",userData.getName())
+                        .putString("gender",userData.getGender())
+                        .putString("CONFIRM","SUCCESS")
+                        .commit();
+                Intent i = new Intent(first_page.this,main_page.class);
+                startActivity(i);
+                first_page.this.finish();
             }
             else {
                 Toast.makeText(first_page.this, "Login Fail", Toast.LENGTH_SHORT).show();

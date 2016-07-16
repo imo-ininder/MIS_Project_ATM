@@ -1,12 +1,16 @@
 package com.example.admin.projectt;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.firebase.client.Firebase;
 
 /**
  * Created by imo on 2016/7/12.
@@ -17,11 +21,16 @@ public class CustomDialogActivity extends Activity {
     TextView text_content;
     TextView text_title;
     TextView text_close;
+    Firebase ref;
+    Bundle extras;
+    SharedPreferences setting,chatData;
     @Override    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
+        ref = new Firebase("https://mis-atm.firebaseio.com/");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_custom_dialog);
-        Bundle extras = getIntent().getExtras();
+        extras = getIntent().getExtras();
         btn_confirm = (Button)findViewById(R.id.btn_confirm);
         btn_cancel = (Button)findViewById(R.id.btn_cancel);
         text_close = (TextView)findViewById(R.id.text_close);
@@ -33,19 +42,30 @@ public class CustomDialogActivity extends Activity {
         }
 
         btn_confirm.setOnClickListener(new View.OnClickListener() {
-            @Override            public void onClick(View v) {
-                Toast.makeText(CustomDialogActivity.this,"you click confirm!",Toast.LENGTH_SHORT).show();
+            @Override
+            public void onClick(View v) {
+                setting = getSharedPreferences("LoginData",0);
+                chatData = getSharedPreferences("ATM_chatData",0);
+                Firebase targetRef = ref.child(extras.getString("path"));
+                targetRef.child("acceptedBy").setValue(setting.getString("id",""));
+                Intent iChatroom = new Intent(CustomDialogActivity.this,ChatroomActivity.class);
+                chatData.edit().putString("path",extras.getString("id")+extras.getString("id",""))
+                        .putString("chatTitle",extras.getString("title"))
+                        .apply();
+                startActivity(iChatroom);
                 finish();
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override            public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 Toast.makeText(CustomDialogActivity.this,"you click cancel!",Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
         text_close.setOnClickListener(new View.OnClickListener() {
-            @Override            public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 Toast.makeText(CustomDialogActivity.this,"you click close!",Toast.LENGTH_SHORT).show();
                 finish();
             }

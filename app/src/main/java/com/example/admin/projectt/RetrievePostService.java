@@ -3,6 +3,7 @@ package com.example.admin.projectt;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Binder;
@@ -29,6 +30,7 @@ public class RetrievePostService extends Service implements GoogleApiClient.OnCo
     Location mCurrentLocation;
     LocationRequest mLocationRequest;
     Double mLongitude, mLatitude, distance;
+    SharedPreferences setting;
     private boolean mInProgress; // Flag that indicates if a request is underway.
     final double fDistance = 1; // 單位KM
     private Firebase ref;
@@ -50,6 +52,7 @@ public class RetrievePostService extends Service implements GoogleApiClient.OnCo
         super.onCreate();
         Toast.makeText(this, "Service is started", Toast.LENGTH_SHORT).show();
         mInProgress = false;
+        setting = getSharedPreferences("LoginData",0);
         Firebase.setAndroidContext(this);
         ref = new Firebase("https://mis-atm.firebaseio.com/task");
         buildGoogleApiClientIfNeeded();
@@ -65,15 +68,22 @@ public class RetrievePostService extends Service implements GoogleApiClient.OnCo
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChild) {
                 if(dataSnapshot !=null) {
                     Task rTask = dataSnapshot.getValue(Task.class);
-                    mLatitude = rTask.getLatitude();
-                    mLongitude = rTask.getLongitude();
-                    distance = Math.abs(mLongitude - 100) + Math.abs(mLatitude - 100);
-                    if (distance <= fDistance) {
-                        Intent intent = new Intent(RetrievePostService.this, CustomDialogActivity.class);
-                        intent.putExtra("content", rTask.getTaskContent());
-                        intent.putExtra("title", rTask.getTaskTittle());
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
+                    if (rTask.getId().equals(setting.getString("id",""))){
+                        return;
+                    }else{
+                        String path = dataSnapshot.getKey();
+                        mLatitude = rTask.getLatitude();
+                        mLongitude = rTask.getLongitude();
+                        distance = Math.abs(mLongitude - 100) + Math.abs(mLatitude - 100);
+                        if (distance <= fDistance) {
+                            Intent intent = new Intent(RetrievePostService.this, CustomDialogActivity.class);
+                            intent.putExtra("content", rTask.getTaskContent());
+                            intent.putExtra("title", rTask.getTaskTittle());
+                            intent.putExtra("id",rTask.getId());
+                            intent.putExtra("path",path);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
                     }
                 }
             }
