@@ -82,14 +82,13 @@ public class ChatroomActivity extends AppCompatActivity {
         chatRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if(dataSnapshot.getKey().equals("cancel")){
+                if (dataSnapshot.getKey().equals("cancel")) {
                     chatRef.removeValue();
-                }else {
+                } else {
                     Message m = dataSnapshot.getValue(Message.class);
                     tvContent.append(m.getAuthor() + ":" + m.getMessage() + "\n");
                 }
             }
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 

@@ -4,9 +4,7 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.content.Intent;
 import android.widget.Button;
@@ -16,7 +14,6 @@ import android.widget.Toast;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.io.File;
@@ -107,9 +104,9 @@ public class first_page extends AppCompatActivity {
                 setting.edit().putString("email",userData.getEmail())
                         .putString("id",userData.getId())
                         .putString("name",userData.getName())
-                        .putString("gender",userData.getGender())
+                        .putString("pwdHint",userData.getPasswordHint())
                         .putString("CONFIRM","SUCCESS")
-                        .commit();
+                        .apply();
                 Intent i = new Intent(first_page.this,main_page.class);
                 startActivity(i);
                 first_page.this.finish();
