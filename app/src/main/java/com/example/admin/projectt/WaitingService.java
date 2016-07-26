@@ -14,15 +14,16 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
+import java.util.logging.Logger;
+
 
 /**
  * Created by imo on 2016/7/15.
  */
-public class WaitingService extends Service {
+public class WaitingService extends Service implements ChatConstant ,Constant{
     IBinder mBinder = new LocalBinder();
     CountDownTimer ct;
-    Firebase ref;
-    Firebase postRef;
+    Firebase ref,postRef;
     String title;
     SharedPreferences setting,chatData;
     public class LocalBinder extends Binder {
@@ -39,15 +40,18 @@ public class WaitingService extends Service {
     public void onCreate(){
         super.onCreate();
         Firebase.setAndroidContext(this);
+
         ref = new Firebase("https://mis-atm.firebaseio.com/task");
+        setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
+        chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
+
         Log.d("ServiceDebug","START");
-        ct = new CountDownTimer(10000,1000) {
+        ct = new CountDownTimer(30000,1000) {
             @Override
             public void onTick(long l) {
-                String remaing = Long.toString(l/1000);
-                Log.d("Second Remaining",remaing);
+                String remaining = Long.toString(l/1000);
+                Log.d("Second Remaining",remaining);
             }
-
             @Override
             public void onFinish() {
                 postRef.removeValue();
@@ -59,27 +63,27 @@ public class WaitingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        postRef = ref.child(intent.getStringExtra("path"));
-        title = intent.getStringExtra("taskTitle");
-        Log.d("pathDebug",intent.getStringExtra("path"));
+
+        postRef = ref.child(intent.getStringExtra(DELIVER_TASK_PATH));
+        title = intent.getStringExtra(DELIVER_TASK_TITLE);
+        Log.d("pathDebug",intent.getStringExtra(DELIVER_TASK_PATH));
         Log.d("Title",title);
 
         postRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                for(DataSnapshot d :dataSnapshot.getChildren()){
-                    if(d.getKey()=="acceptedBy"){
-                        setting = getSharedPreferences("LoginData",0);
-                        chatData = getSharedPreferences("ATM_chatData",0);
-                        chatData.edit().putString("path",setting.getString("id","") + d.getValue().toString())
-                                .putString("chatTitle",title)
-                                .apply();
-                        postRef.removeValue();
-                        Intent i = new Intent(WaitingService.this,ChatroomActivity.class);
-                        startService(i);
-                        WaitingService.this.stopSelf();
-                    }
-                }
+                if ("acceptedBy".equals(dataSnapshot.getKey()))
+                    return;
+
+                chatData.edit().putString(CHAT_PATH,setting.getString(LOGIN_ID,"") +
+                        dataSnapshot.getValue().toString())
+                        .putString(CHAT_TITLE,title)
+                        .apply();
+                postRef.removeValue();
+                Intent i = new Intent(WaitingService.this,ChatroomActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                WaitingService.this.stopSelf();
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -105,7 +109,6 @@ public class WaitingService extends Service {
     }
     @Override
     public void onDestroy() {
-        Log.d("ServiceDebug","CLOSE");
         super.onDestroy();
     }
 

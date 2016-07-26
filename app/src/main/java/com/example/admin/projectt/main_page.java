@@ -1,8 +1,11 @@
 package com.example.admin.projectt;
 
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.content.Intent;
 import android.widget.Button;
@@ -20,6 +23,9 @@ public class main_page extends AppCompatActivity{
         post = (Button) findViewById(R.id.postBtm);
         logout = (Button) findViewById(R.id.btnLogout);
         chatData = getSharedPreferences("ATM_chatData", 0);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},1340);
+        }
         if (chatData.getBoolean("chatState", false)) {
             post.setText("ChatRoom");
             intent = new Intent(main_page.this, ChatroomActivity.class);
