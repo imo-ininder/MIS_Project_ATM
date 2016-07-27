@@ -16,33 +16,29 @@ import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.location.places.Places;
 
 
 /**
  * Created by imo on 2016/6/29.
  */
-public class SendRequest extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class SendRequest extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
 
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Double mLongitude,mLatitude;
     SharedPreferences setting;
     String id;
+    final int PLACE_PICKER_REQUEST = 1;
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {}
+    public void onConnectionFailed(ConnectionResult connectionResult) { }
     @Override
-    public void onConnected(Bundle connectionHint) {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-        }
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation  != null) {
-            mLongitude = mLastLocation.getLongitude();
-            mLatitude =  mLastLocation.getLatitude();
-        }
-    }
+    public void onConnected(Bundle connectionHint) { }
     @Override
     public void onConnectionSuspended(int i) { }
 
@@ -55,12 +51,14 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
         final Firebase ref =new Firebase("https://mis-atm.firebaseio.com/");
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
                     .build();
         }
         final Button btn_submit_task = (Button) findViewById(R.id.btn_submit_task);
+        final Button btnPlacePicker = (Button) findViewById(R.id.btnPlacePicker);
         btn_submit_task.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v) {
@@ -99,6 +97,21 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
             }
         });
 
+        btnPlacePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(SendRequest.this), PLACE_PICKER_REQUEST);
+                }catch (GooglePlayServicesNotAvailableException e){
+                    e.printStackTrace();
+                }catch (GooglePlayServicesRepairableException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     protected void onStart() {
@@ -109,5 +122,15 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
     protected void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(this,data);
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
