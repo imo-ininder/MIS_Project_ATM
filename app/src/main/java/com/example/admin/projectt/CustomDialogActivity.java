@@ -10,7 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 /**
  * Created by imo on 2016/7/12.
@@ -51,18 +54,36 @@ public class CustomDialogActivity extends Activity implements Constant {
             @Override
             public void onClick(View v) {
 
-                //Inform counterpart task is accepted.
-                Firebase targetRef = ref.child(extras.getString(DELIVER_TASK_PATH));
-                targetRef.child("acceptedBy").setValue(setting.getString(LOGIN_ID,""));
 
-                //Create chat room & init Chat_SharePreference.
-                Intent iChatRoom = new Intent(CustomDialogActivity.this,ChatroomActivity.class);
-                chatData.edit().putString(CHAT_PATH,extras.getString(DELIVER_TASK_ID)+
-                                            setting.getString(LOGIN_ID,""))
-                        .putString(CHAT_TITLE,extras.getString(DELIVER_TASK_TITLE))
-                        .apply();
-                startActivity(iChatRoom);
-                finish();
+                final Firebase targetRef = ref.child(extras.getString(DELIVER_TASK_PATH));
+                targetRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            //Inform counterpart task is accepted.
+                            targetRef.child("acceptedBy").setValue(setting.getString(LOGIN_ID,""));
+
+                            //Create chat room & init Chat_SharePreference.
+                            Intent iChatRoom = new Intent(CustomDialogActivity.this,ChatroomActivity.class);
+                            chatData.edit().putString(CHAT_PATH,extras.getString(DELIVER_TASK_ID)+
+                                    setting.getString(LOGIN_ID,""))
+                                    .putString(CHAT_TITLE,extras.getString(DELIVER_TASK_TITLE))
+                                    .apply();
+                            startActivity(iChatRoom);
+                            finish();
+                        }else{
+                            Toast.makeText(CustomDialogActivity.this,
+                                    "任務已經被接走或過期囉",
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {

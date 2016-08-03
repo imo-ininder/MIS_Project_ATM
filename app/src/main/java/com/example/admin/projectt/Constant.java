@@ -7,6 +7,7 @@ public interface Constant extends ChatConstant {
     String LOGIN_SHAREDPREFERENCE = "LoginData";
     String LOGIN_ID = "id";
     String LOGIN_RETRIEVE_SERVICE ="service";
+    String LOGIN_NOTIFICATION ="notification";
     String DELIVER_TASK_PATH = "path";
     String DELIVER_TASK_TITLE = "title";
     String DELIVER_TASK_CONTENT ="content";

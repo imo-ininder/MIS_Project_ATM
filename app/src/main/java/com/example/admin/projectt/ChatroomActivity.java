@@ -1,8 +1,10 @@
 package com.example.admin.projectt;
 
-import android.app.Fragment;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.widget.*;
@@ -26,16 +28,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 
 
 public class ChatroomActivity extends AppCompatActivity implements ChatConstant,Constant {
-    private Firebase ref ,chatRef;
+    Firebase ref ,chatRef;
     SharedPreferences chatData,setting;
     EditText et;
-    TextView tvTitle,tvContent;
+    TextView tvContent;
     Button chat,confirm,cancel;
     String myId;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
+    DrawerLayout mDrawerLayout;
+    ListView mDrawerList;
     Toolbar toolbar;
     ActionBarDrawerToggle mDrawerToggle;
     ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[9];
@@ -45,50 +45,11 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatroom);
         Firebase.setAndroidContext(this);
-        mTitle = mDrawerTitle = getTitle();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow(); // in Activity's onCreate() for instance
             w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        this.setSupportActionBar(this.toolbar);
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        //新增側邊欄裡的選項
-        drawerItem[0] = new ObjectDrawerItem("");
-        drawerItem[1] = new ObjectDrawerItem("放棄");
-        drawerItem[2] = new ObjectDrawerItem("協議取消");
-        drawerItem[3] = new ObjectDrawerItem("完成");
-        drawerItem[4] = new ObjectDrawerItem(" ");
-        drawerItem[5] = new ObjectDrawerItem(" ");
-        drawerItem[6] = new ObjectDrawerItem("拍照");
-        drawerItem[7] = new ObjectDrawerItem("本機相簿");
-        drawerItem[8] = new ObjectDrawerItem("google 相簿");
-
-        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.listview_item_row, drawerItem);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,
-                mDrawerLayout,
-                toolbar,
-                R.string.drawer_open,
-                R.string.drawer_close
-        ) {
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-
 
         //initialization Firebase root url & Chat SharedPreferences
         chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
@@ -99,13 +60,28 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
 
         //initialization UI object
         et      = (EditText)findViewById(R.id.chatEditText);
-        tvTitle   = (TextView)findViewById(R.id.chatroomTitle);
         tvContent = (TextView)findViewById(R.id.chatroomContent);
         chat      = (Button)findViewById(R.id.chatBtn);
         confirm   = (Button)findViewById(R.id.chatConfirm);
         cancel    = (Button)findViewById(R.id.chatCancel);
-        tvTitle.setText(chatData.getString(CHAT_TITLE,""));
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(chatData.getString(CHAT_TITLE,"ATM"));
+        this.setSupportActionBar(this.toolbar);
+
+        //新增側邊欄裡的選項
+        drawerItem[0] = new ObjectDrawerItem("");
+        drawerItem[1] = new ObjectDrawerItem("放棄");
+        drawerItem[2] = new ObjectDrawerItem("協議取消");
+        drawerItem[3] = new ObjectDrawerItem("完成");
+        drawerItem[4] = new ObjectDrawerItem(" ");
+        drawerItem[5] = new ObjectDrawerItem(" ");
+        drawerItem[6] = new ObjectDrawerItem("拍照");
+        drawerItem[7] = new ObjectDrawerItem("本機相簿");
+        drawerItem[8] = new ObjectDrawerItem("google 相簿");
         //end of initialization
+
 
         //Change btn in main activity from "POST" to "CHAT"
         chatData.edit().putBoolean(CHAT_STATE,true).apply();
@@ -150,6 +126,29 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
             }
         });
 
+        DrawerItemCustomAdapter adapter =
+                new DrawerItemCustomAdapter(this, R.layout.listview_item_row, drawerItem);
+        mDrawerList.setAdapter(adapter);
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                toolbar,
+                R.string.drawer_open,
+                R.string.drawer_close
+        ) {
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+
     }
 
     @Override
@@ -165,8 +164,10 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                         return;
 
                     chatRef.removeValue();
-                    Toast.makeText(ChatroomActivity.this,"對方已經離開聊天室",Toast.LENGTH_SHORT)
-                            .show();
+                    if(!dataSnapshot.getValue().toString().equals(setting.getString(LOGIN_ID,""))) {
+                        Toast.makeText(ChatroomActivity.this, "對方已經離開聊天室", Toast.LENGTH_SHORT)
+                                .show();
+                    }
                     Intent i = new Intent(ChatroomActivity.this,main_page.class);
                     startActivity(i);
                     finish();
@@ -199,56 +200,67 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
 
     }
 
+    //判斷選了哪一個選項(case的數字是drawerItem陣列的索引)
+    private void selectItem(int position) {
+
+        switch (position) {
+
+            case 1: //放棄
+                new AlertDialog.Builder(ChatroomActivity.this)
+                        .setTitle("ATM系統訊息")
+                        .setCancelable(false)
+                        .setMessage("放棄會被系統懲罰，確定要離開嗎?")
+                        .setPositiveButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setNegativeButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        }).show();
+                break;
+            case 2: //協議取消
+                new AlertDialog.Builder(ChatroomActivity.this)
+                        .setTitle("ATM系統訊息")
+                        .setCancelable(false)
+                        .setMessage("提出協議取消嗎?")
+                        .setPositiveButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setNegativeButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        }).show();
+                break;
+            case 3: //NFC 認證
+                Intent i = new Intent(ChatroomActivity.this,NFCPageActivity.class);
+                startActivity(i);
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void setTitle(CharSequence title) {
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
 
     }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
-    }
-
-
-    //判斷選了哪一個選項(case的數字是drawerItem陣列的索引)
-    private void selectItem(int position) {
-
-        switch (position) {
-            case 0:                 //選了第一個選項(我讓他空者因為我覺得太上面)
-                Toast toast = Toast.makeText(ChatroomActivity.this,
-                        "Hello world!", Toast.LENGTH_LONG);
-
-                toast.show();
-                break;
-            case 1:                 //選了第2個選項(放棄)
-                Toast toast1 = Toast.makeText(ChatroomActivity.this,
-                        "放棄", Toast.LENGTH_LONG);
-
-                toast1.show();
-                break;
-            case 2:                 //選了第2個選項(協議取消)
-                Toast toast2 = Toast.makeText(ChatroomActivity.this,
-                        "協議取消", Toast.LENGTH_LONG);
-
-                toast2.show();
-                break;
-
-            default:
-                break;
-        }
     }
 
 }

@@ -1,7 +1,11 @@
 package com.example.admin.projectt;
 
 
+
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -9,8 +13,9 @@ import android.location.Location;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
+
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -35,6 +40,8 @@ public class RetrievePostService extends Service
     LocationRequest mLocationRequest;
     Double mLongitude, mLatitude, distance;
     SharedPreferences setting;
+    NotificationManager mNotificationManager;
+    NotificationCompat.Builder mbuilder;
     private boolean mInProgress; // Flag that indicates if a request is underway.
     final double fDistance = 0.005; // 經緯度換算後約500m
     private Firebase ref;
@@ -59,6 +66,10 @@ public class RetrievePostService extends Service
         setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
         Firebase.setAndroidContext(this);
         ref = new Firebase("https://mis-atm.firebaseio.com/task");
+        mNotificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mbuilder = new NotificationCompat.Builder(this)
+                                    .setContentTitle("ATM")
+                                    .setContentText("有新的請求喔");
         buildGoogleApiClientIfNeeded();
         createLocationRequest();
     }
@@ -90,7 +101,18 @@ public class RetrievePostService extends Service
                         intent.putExtra(DELIVER_TASK_ID, rTask.getId());
                         intent.putExtra(DELIVER_TASK_TITLE, path);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
+
+                        if(setting.getBoolean(LOGIN_NOTIFICATION,false)){
+                                PendingIntent resultPendingIntent =
+                                        PendingIntent.getActivity(RetrievePostService.this,
+                                                0,
+                                                intent,
+                                                PendingIntent.FLAG_UPDATE_CURRENT);
+                                mbuilder.setContentIntent(resultPendingIntent);
+                                mNotificationManager.notify(1,mbuilder.build());
+                        }else {
+                            startActivity(intent);
+                        }
                     }
                 }
             }

@@ -13,6 +13,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 
 import com.google.android.gms.location.LocationServices;
@@ -21,6 +22,7 @@ import com.google.android.gms.location.LocationServices;
 public class settings_page extends AppCompatActivity implements Constant{
     Intent serviceIntent;
     RadioButton r1,r2;
+    RadioGroup mRadioGroup;
     SharedPreferences setting;
     Switch s;
     @Override
@@ -36,11 +38,19 @@ public class settings_page extends AppCompatActivity implements Constant{
         serviceIntent.setClass(this, RetrievePostService.class);
         r1 =(RadioButton)findViewById(R.id.radioButton);
         r2 =(RadioButton)findViewById(R.id.radioButton2);
-        r1.setClickable(false);
-        r2.setClickable(false);
         s = (Switch)findViewById(R.id.switchRetrieve);
-        if(setting.getBoolean(LOGIN_RETRIEVE_SERVICE,false)){
+        mRadioGroup = (RadioGroup)findViewById(R.id.radioGroup);
+
+        if(setting.getBoolean(LOGIN_RETRIEVE_SERVICE,false)) {
             s.setChecked(true);
+        }else{
+            r1.setClickable(false);
+            r2.setClickable(false);
+        }
+        if(setting.getBoolean(LOGIN_NOTIFICATION,false)){
+            r2.setChecked(true);
+        }else{
+            r1.setChecked(true);
         }
 
         s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -62,6 +72,17 @@ public class settings_page extends AppCompatActivity implements Constant{
                     setting.edit().putBoolean(LOGIN_RETRIEVE_SERVICE,false).apply();
                     r1.setClickable(false);
                     r2.setClickable(false);
+                }
+            }
+        });
+
+        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (i==R.id.radioButton){
+                    setting.edit().putBoolean(LOGIN_NOTIFICATION,false).apply();
+                }else{
+                    setting.edit().putBoolean(LOGIN_NOTIFICATION,true).apply();
                 }
             }
         });
