@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -24,6 +25,11 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -67,10 +73,12 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
 
         final Button btn_submit_task = (Button) findViewById(R.id.btn_submit_task);
         final Button btnPlacePicker = (Button) findViewById(R.id.btnPlacePicker);
+
         btn_submit_task.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v) {
                 Firebase taskRef= ref.child("task");
+                Firebase historyRef = ref.child("history");
                 Firebase newPostRef = taskRef.push();
                 EditText title = (EditText)findViewById(R.id.taskTitle);
                 EditText location = (EditText)findViewById(R.id.taskLocation);
@@ -89,15 +97,22 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-
                 Task t = new Task(title.getText().toString(),
                         location.getText().toString(),
                         content.getText().toString(),
                         id,
                         mLongitude,
                         mLatitude) ;
+
+                Map<String,String> historyContent = new HashMap<String, String>();
+                historyContent.put("location",t.getTaskLocation());
+                historyContent.put("content",t.getTaskContent());
+
+                Map<String,Map<String,String>> history = new HashMap<String, Map<String, String>>();
+                history.put(t.getTaskTittle(),historyContent);
+
                 newPostRef.setValue(t);
+                historyRef.child(setting.getString(LOGIN_ID,"")).setValue(history);
                 Toast.makeText(SendRequest.this, "發送成功!", Toast.LENGTH_SHORT).show();
 
                 //開啟Service等待回應,回到主畫面

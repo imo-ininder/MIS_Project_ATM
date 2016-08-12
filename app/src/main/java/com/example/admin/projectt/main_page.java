@@ -15,13 +15,14 @@ import android.widget.Toast;
 public class main_page extends AppCompatActivity{
     Intent intent;
     SharedPreferences chatData;
-    Button post,logout;
+    Button post,logout,history;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
         post = (Button) findViewById(R.id.postBtm);
         logout = (Button) findViewById(R.id.btnLogout);
+        history = (Button) findViewById(R.id.btnHistory);
         chatData = getSharedPreferences("ATM_chatData", 0);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},1340);
@@ -32,6 +33,14 @@ public class main_page extends AppCompatActivity{
         } else {
             intent = new Intent(main_page.this, SendRequest.class);
         }
+
+        history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent();
+                startActivity(i);
+            }
+        });
 
         post.setOnClickListener(new View.OnClickListener() {
             @Override
