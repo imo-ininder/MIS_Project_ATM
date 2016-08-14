@@ -19,24 +19,23 @@ import com.firebase.client.ValueEventListener;
 import java.io.File;
 
 
-public class first_page extends AppCompatActivity {
+public class first_page extends AppCompatActivity implements Constant{
     private UserData userData;
     private ProgressDialog pd;
     private Boolean loginFlag = false;
-    File file;
+    SharedPreferences setting;
     Firebase ref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        file = new File("/data/data/com.example.admin.projectt/shared_prefs","LoginData.xml");
-        if(file.exists()){
-            SharedPreferences setting = getSharedPreferences("LoginData",0);
-            if(setting.getString("CONFIRM","").equals("SUCCESS")){
-                Intent i = new Intent(first_page.this,main_page.class);
-                startActivity(i);
-                first_page.this.finish();
-            }
+
+        setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
+        if(setting.getBoolean(LOGIN_STATE,false)){
+            Intent i = new Intent(first_page.this,main_page.class);
+            startActivity(i);
+            first_page.this.finish();
         }
+
         setContentView(R.layout.first_page_layout);
         Firebase.setAndroidContext(this);
         ref = new Firebase("https://mis-atm.firebaseio.com/userdata");
@@ -100,12 +99,11 @@ public class first_page extends AppCompatActivity {
         protected void onPostExecute(Boolean b){
             pd.dismiss();
             if(loginFlag){
-                SharedPreferences setting = getSharedPreferences("LoginData",0);
                 setting.edit().putString("email",userData.getEmail())
                         .putString("id",userData.getId())
                         .putString("name",userData.getName())
                         .putString("pwdHint",userData.getPasswordHint())
-                        .putString("CONFIRM","SUCCESS")
+                        .putBoolean(LOGIN_STATE,true)
                         .apply();
                 Intent i = new Intent(first_page.this,main_page.class);
                 startActivity(i);

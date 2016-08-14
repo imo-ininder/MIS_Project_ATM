@@ -5,6 +5,7 @@ package com.example.admin.projectt;
  */
 public interface Constant extends ChatConstant {
     String LOGIN_SHAREDPREFERENCE = "LoginData";
+    String LOGIN_STATE ="isLogin";
     String LOGIN_ID = "id";
     String LOGIN_RETRIEVE_SERVICE ="service";
     String LOGIN_NOTIFICATION ="notification";

@@ -64,17 +64,15 @@ public class HistoryActivity extends AppCompatActivity implements Constant{
             }
         });
     }
-
+    //尚未完成
     private void getData(){
         ref.child(setting.getString(LOGIN_ID,""))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists())
+                if(!dataSnapshot.hasChildren())
                     return;
-                for (DataSnapshot d: dataSnapshot.getChildren()){
-                    title.add(d.getKey());
-                }
+                title.add(dataSnapshot.getKey());
                 mAdapter = new ArrayAdapter<>(HistoryActivity.this
                         ,android.R.layout.simple_list_item_1
                         ,title);
@@ -93,5 +91,5 @@ public class HistoryActivity extends AppCompatActivity implements Constant{
         mAdapter = new ArrayAdapter<>(HistoryActivity.this
                 ,android.R.layout.simple_list_item_1
                 ,title);
-    }
+    }//測試用資料
 }

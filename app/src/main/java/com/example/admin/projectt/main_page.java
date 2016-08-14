@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
-public class main_page extends AppCompatActivity{
+public class main_page extends AppCompatActivity implements Constant{
     Intent intent;
     SharedPreferences chatData;
     Button post,logout,history;
@@ -23,11 +23,11 @@ public class main_page extends AppCompatActivity{
         post = (Button) findViewById(R.id.postBtm);
         logout = (Button) findViewById(R.id.btnLogout);
         history = (Button) findViewById(R.id.btnHistory);
-        chatData = getSharedPreferences("ATM_chatData", 0);
+        chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES, 0);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},1340);
         }
-        if (chatData.getBoolean("chatState", false)) {
+        if (chatData.getBoolean(CHAT_STATE, false)) {
             post.setText("ChatRoom");
             intent = new Intent(main_page.this, ChatroomActivity.class);
         } else {
@@ -37,7 +37,7 @@ public class main_page extends AppCompatActivity{
         history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent();
+                Intent i = new Intent(main_page.this,HistoryActivity.class);
                 startActivity(i);
             }
         });
@@ -51,8 +51,8 @@ public class main_page extends AppCompatActivity{
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences setting = getSharedPreferences("LoginData", 0);
-                setting.edit().putString("CONFIRM", "LOGOUT").apply();
+                SharedPreferences setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE, 0);
+                setting.edit().putBoolean(LOGIN_STATE,false).apply();
                 Intent i = new Intent(main_page.this, first_page.class);
                 startActivity(i);
                 main_page.this.finish();

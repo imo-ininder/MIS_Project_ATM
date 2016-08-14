@@ -64,26 +64,27 @@ public class WaitingService extends Service implements ChatConstant ,Constant{
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 
+        //拿到自己任務的Firebase路徑
         postRef = ref.child(intent.getStringExtra(DELIVER_TASK_PATH));
         title = intent.getStringExtra(DELIVER_TASK_TITLE);
+
         Log.d("pathDebug",intent.getStringExtra(DELIVER_TASK_PATH));
         Log.d("Title",title);
 
         postRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if ("acceptedBy".equals(dataSnapshot.getKey()))
-                    return;
-
-                chatData.edit().putString(CHAT_PATH,setting.getString(LOGIN_ID,"") +
-                        dataSnapshot.getValue().toString())
-                        .putString(CHAT_TITLE,title)
-                        .apply();
-                postRef.removeValue();
-                Intent i = new Intent(WaitingService.this,ChatroomActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-                WaitingService.this.stopSelf();
+                if ("acceptedBy".equals(dataSnapshot.getKey())) {
+                    chatData.edit().putString(CHAT_PATH, setting.getString(LOGIN_ID, "") +
+                            dataSnapshot.getValue().toString())
+                            .putString(CHAT_TITLE, title)
+                            .apply();
+                    postRef.removeValue();
+                    Intent i = new Intent(WaitingService.this, ChatroomActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                    WaitingService.this.stopSelf();
+                }
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
