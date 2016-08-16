@@ -9,4 +9,6 @@ public interface ChatConstant {
     String CHAT_PATH="path";
     String CHAT_STATE="chatState";
     String CHAT_IS_DOUBLE_CHECKED = "doubleChecked";
+    String CHAT_TASK_SENDER ="isSender";
+    String CHAT_NFC_CHECK_MSG="isCompleted";
 }

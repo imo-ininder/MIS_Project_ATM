@@ -68,8 +68,9 @@ public class RetrievePostService extends Service
         ref = new Firebase("https://mis-atm.firebaseio.com/task");
         mNotificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mbuilder = new NotificationCompat.Builder(this)
-                                    .setContentTitle("ATM")
-                                    .setContentText("有新的請求喔");
+                .setContentTitle("ATM")
+                .setContentText("有新的請求喔")
+                .setSmallIcon(R.drawable.atm);
         buildGoogleApiClientIfNeeded();
         createLocationRequest();
     }
@@ -99,10 +100,10 @@ public class RetrievePostService extends Service
                         intent.putExtra(DELIVER_TASK_CONTENT, rTask.getTaskContent());
                         intent.putExtra(DELIVER_TASK_TITLE, rTask.getTaskTittle());
                         intent.putExtra(DELIVER_TASK_ID, rTask.getId());
-                        intent.putExtra(DELIVER_TASK_TITLE, path);
+                        intent.putExtra(DELIVER_TASK_PATH, path);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                        if(setting.getBoolean(LOGIN_NOTIFICATION,false)){
+                        if(setting.getBoolean(LOGIN_NOTIFICATION, true)){
                                 PendingIntent resultPendingIntent =
                                         PendingIntent.getActivity(RetrievePostService.this,
                                                 0,

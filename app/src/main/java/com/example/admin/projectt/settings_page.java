@@ -79,10 +79,10 @@ public class settings_page extends AppCompatActivity implements Constant{
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if (i==R.id.radioButton){
-                    setting.edit().putBoolean(LOGIN_NOTIFICATION,false).apply();
+                if (i==R.id.radioButton) { // Notification
+                    setting.edit().putBoolean(LOGIN_NOTIFICATION, true).apply();
                 }else{
-                    setting.edit().putBoolean(LOGIN_NOTIFICATION,true).apply();
+                    setting.edit().putBoolean(LOGIN_NOTIFICATION, false).apply();
                 }
             }
         });

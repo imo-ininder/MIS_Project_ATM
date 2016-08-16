@@ -78,6 +78,7 @@ public class WaitingService extends Service implements ChatConstant ,Constant{
                     chatData.edit().putString(CHAT_PATH, setting.getString(LOGIN_ID, "") +
                             dataSnapshot.getValue().toString())
                             .putString(CHAT_TITLE, title)
+                            .putBoolean(CHAT_TASK_SENDER,true)
                             .apply();
                     postRef.removeValue();
                     Intent i = new Intent(WaitingService.this, ChatroomActivity.class);

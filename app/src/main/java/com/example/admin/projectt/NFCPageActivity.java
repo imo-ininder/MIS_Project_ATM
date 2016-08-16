@@ -11,6 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
 
 /**
  * Created by imo on 2016/8/4.
@@ -20,31 +26,66 @@ public class NFCPageActivity extends AppCompatActivity  implements Constant{
     Button go;
     SharedPreferences setting;
     NdefMessage msg;
+    SharedPreferences chatData;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfcpage);
+        Firebase.setAndroidContext(this);
+        chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
 
         setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
-        go = (Button) findViewById(R.id.button);
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         msg = new NdefMessage(new NdefRecord[]{
-                NdefRecord.createMime("text/plain",setting.getString(LOGIN_ID,"").getBytes())
+                NdefRecord.createMime("text/plain"
+                        ,CHAT_NFC_CHECK_MSG.getBytes())
         });
 
         if (mNfcAdapter != null) {
-            Toast.makeText(this, "already set ndefmessage", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "already set ndef message", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "adapter is null", Toast.LENGTH_LONG).show();
         }
 
-        go.setOnClickListener(new View.OnClickListener() {
+    }
+    protected void onStart(){
+        super.onStart();
+        Firebase ref = new Firebase("https://mis-atm.firebaseio.com/chat");
+        final Firebase charRef = ref.child(chatData.getString(CHAT_PATH,""));
+        charRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onClick(View view) {
-                Intent i = new Intent(NFCPageActivity.this,ReciveNFCActivity.class);
-                startActivity(i);
-                finish();
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.getKey().equals(CHAT_NFC_CHECK_MSG)){
+                    chatData.edit().putBoolean(CHAT_STATE,false)
+                            .apply();
+                    charRef.removeValue();
+
+                    finish();
+                    startActivity(new Intent(NFCPageActivity.this,main_page.class)
+                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    Toast.makeText(NFCPageActivity.this,"任務完成",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
             }
         });
     }

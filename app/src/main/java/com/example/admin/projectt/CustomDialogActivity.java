@@ -26,8 +26,8 @@ public class CustomDialogActivity extends Activity implements Constant {
     SharedPreferences setting,chatData;
     @Override    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_custom_dialog);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_custom_dialog);
         Firebase.setAndroidContext(this);
 
         //initialization Firebase root url & Chat SharedPreferences
@@ -68,6 +68,7 @@ public class CustomDialogActivity extends Activity implements Constant {
                             chatData.edit().putString(CHAT_PATH,extras.getString(DELIVER_TASK_ID)+
                                     setting.getString(LOGIN_ID,""))
                                     .putString(CHAT_TITLE,extras.getString(DELIVER_TASK_TITLE))
+                                    .putBoolean(CHAT_TASK_SENDER,false)
                                     .apply();
                             startActivity(iChatRoom);
                             finish();

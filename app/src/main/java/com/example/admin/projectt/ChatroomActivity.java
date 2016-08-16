@@ -1,9 +1,13 @@
 package com.example.admin.projectt;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
+import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,7 +31,7 @@ import android.os.Build;
 import android.support.v7.app.ActionBarDrawerToggle;
 
 
-public class ChatroomActivity extends AppCompatActivity implements ChatConstant,Constant {
+public class ChatroomActivity extends AppCompatActivity implements Constant {
     Firebase ref ,chatRef;
     SharedPreferences chatData,setting;
     EditText et;
@@ -118,9 +122,12 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
             public void onClick(View view) {
                 chatData.edit().putString(CHAT_PATH,"")
                         .putString(CHAT_TITLE,"")
-                        .putBoolean(CHAT_STATE,false).apply();
+                        .putBoolean(CHAT_STATE,false)
+                        .putBoolean(CHAT_IS_DOUBLE_CHECKED,false)
+                        .apply();
                 chatRef.child("cancel").setValue(myId);
-                Intent i = new Intent(ChatroomActivity.this,main_page.class);
+                Intent i = new Intent(ChatroomActivity.this,main_page.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
                 finish();
             }
@@ -167,11 +174,18 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                     if(!dataSnapshot.getValue().toString().equals(setting.getString(LOGIN_ID,""))) {
                         Toast.makeText(ChatroomActivity.this, "對方已經離開聊天室", Toast.LENGTH_SHORT)
                                 .show();
+                        chatData.edit().putString(CHAT_PATH,"")
+                                .putString(CHAT_TITLE,"")
+                                .putBoolean(CHAT_STATE,false)
+                                .putBoolean(CHAT_IS_DOUBLE_CHECKED,false)
+                                .apply();
+                        Intent i = new Intent(ChatroomActivity.this,main_page.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                        finish();
                     }
-                    Intent i = new Intent(ChatroomActivity.this,main_page.class);
-                    startActivity(i);
-                    finish();
-                } else {
+
+                } else if(!dataSnapshot.getKey().equals(CHAT_NFC_CHECK_MSG)) {
                     Message m = dataSnapshot.getValue(Message.class);
                     tvContent.append(m.getAuthor() + ":" + m.getMessage() + "\n");
                 }
@@ -188,6 +202,12 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
             @Override
             public void onCancelled(FirebaseError firebaseError) {}
         });
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        et.setText("");
     }
 
     //判斷選了哪一個選項
@@ -242,13 +262,25 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                         }).show();
                 break;
             case 3: //NFC 認證
-                Intent i = new Intent(ChatroomActivity.this,NFCPageActivity.class);
-                startActivity(i);
+                NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
+                NfcAdapter adapter = manager.getDefaultAdapter();
+                if(adapter!= null && adapter.isEnabled()){
+                    Intent i;
+                    if(chatData.getBoolean(CHAT_TASK_SENDER,true)){
+                        i = new Intent(ChatroomActivity.this,NFCPageActivity.class);
+                    }else {
+                        i = new Intent(ChatroomActivity.this,ReciveNFCActivity.class);
+                    }
+                    startActivity(i);
+                }else{
+                    startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
+                }
                 break;
             default:
                 break;
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
