@@ -2,6 +2,7 @@ package com.example.admin.projectt;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -17,19 +18,23 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.client.ChildEventListener;
 
 
 public class sign_up extends AppCompatActivity {
     EditText email,password,passwordHint,passwordConfirm,name,id;
     RadioGroup radioGroup;
+    SharedPreferences userkey;
     private boolean emailFlag ,idFlag;
     private ProgressDialog pd;
     Firebase ref = new Firebase("https://mis-atm.firebaseio.com/userdata");
+    Firebase refkey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up);
         Firebase.setAndroidContext(this);
+        userkey= getSharedPreferences("hashkey",0);
         final Button submitBtn = (Button) findViewById(R.id.submitUserData);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,8 +47,15 @@ public class sign_up extends AppCompatActivity {
                 id = (EditText)findViewById(R.id.edit_nickname);
                 radioGroup = (RadioGroup) findViewById(R.id.genderGroup);
                 new Checking().execute("email","id",email.getText().toString(),id.getText().toString());
+
+
+
+
             }
         });
+
+
+
     }
     @Override
     protected void onStart(){
@@ -93,6 +105,11 @@ public class sign_up extends AppCompatActivity {
             }
             return true;
         }
+
+
+
+
+
         @Override
         protected void onPostExecute(Boolean b) {
             super.onPostExecute(b);
@@ -112,7 +129,14 @@ public class sign_up extends AppCompatActivity {
                         ,name.getText().toString()
                         ,id.getText().toString()
                         ,r.getText().toString());
-                ref.push().setValue(userData);
+
+
+
+                         refkey= ref.push();
+
+                         refkey.setValue(userData);
+
+
                 Toast.makeText(sign_up.this, "註冊成功", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(sign_up.this,first_page.class);
                 i.putExtra("email",email.getText().toString());
@@ -122,5 +146,6 @@ public class sign_up extends AppCompatActivity {
 
         }
     }
+
 
 }

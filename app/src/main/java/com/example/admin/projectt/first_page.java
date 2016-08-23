@@ -24,7 +24,9 @@ public class first_page extends AppCompatActivity {
     private ProgressDialog pd;
     private Boolean loginFlag = false;
     File file;
-    Firebase ref;
+
+
+      Firebase ref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +72,7 @@ public class first_page extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot d:dataSnapshot.getChildren()) {
+
                         if(!d.child(param[0]).getValue().toString().equals(param[2])){
                             loginFlag = false;
                         }else{
@@ -107,6 +110,8 @@ public class first_page extends AppCompatActivity {
                         .putString("pwdHint",userData.getPasswordHint())
                         .putString("CONFIRM","SUCCESS")
                         .apply();
+
+
                 Intent i = new Intent(first_page.this,main_page.class);
                 startActivity(i);
                 first_page.this.finish();
@@ -116,5 +121,12 @@ public class first_page extends AppCompatActivity {
             }
         }
     }
+
+
+    public void gotottt(View v){
+        Intent it =new Intent(this,main_page.class);
+        startActivity(it);
+    }
+
 
 }

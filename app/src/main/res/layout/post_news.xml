@@ -90,6 +90,13 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/taskLocation"
                 android:layout_weight="1" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Ｐ"
+                android:id="@+id/btnPlacePicker" />
         </LinearLayout>
 
 

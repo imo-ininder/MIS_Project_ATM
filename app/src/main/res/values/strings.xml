@@ -24,8 +24,21 @@
     <string name="paid_tv">報酬</string>
     <string name="describe">描述</string>
     <string name="OUTPUT">送出</string>
+    <string-array name="navigation_drawer_items_array">
+        <item>放棄</item>
+        <item>協議取消</item>
+        <item>放棄</item>
+        <item>NFC</item>
+    </string-array>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_nfcpage">NFCPageActivity</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="hello_square">Hello Square World!</string>
 
 </resources>

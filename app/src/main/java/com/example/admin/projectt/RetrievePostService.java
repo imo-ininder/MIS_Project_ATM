@@ -1,7 +1,11 @@
 package com.example.admin.projectt;
 
 
+
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -9,7 +13,10 @@ import android.location.Location;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 
@@ -25,14 +32,18 @@ import com.google.android.gms.location.LocationServices;
 
 
 
-public class RetrievePostService extends Service implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,LocationListener {
+public class RetrievePostService extends Service
+        implements GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks, LocationListener, Constant {
     GoogleApiClient mGoogleApiClient;
     Location mCurrentLocation;
     LocationRequest mLocationRequest;
     Double mLongitude, mLatitude, distance;
     SharedPreferences setting;
+    NotificationManager mNotificationManager;
+    NotificationCompat.Builder mbuilder;
     private boolean mInProgress; // Flag that indicates if a request is underway.
-    final double fDistance = 1; // 單位KM
+    final double fDistance = 0.005; // 經緯度換算後約500m
     private Firebase ref;
     IBinder mBinder = new LocalBinder();
 
@@ -52,9 +63,13 @@ public class RetrievePostService extends Service implements GoogleApiClient.OnCo
         super.onCreate();
         Toast.makeText(this, "Service is started", Toast.LENGTH_SHORT).show();
         mInProgress = false;
-        setting = getSharedPreferences("LoginData",0);
+        setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
         Firebase.setAndroidContext(this);
         ref = new Firebase("https://mis-atm.firebaseio.com/task");
+        mNotificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mbuilder = new NotificationCompat.Builder(this)
+                                    .setContentTitle("ATM")
+                                    .setContentText("有新的請求喔");
         buildGoogleApiClientIfNeeded();
         createLocationRequest();
     }
@@ -68,20 +83,34 @@ public class RetrievePostService extends Service implements GoogleApiClient.OnCo
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChild) {
                 if(dataSnapshot !=null) {
                     Task rTask = dataSnapshot.getValue(Task.class);
-                    if (rTask.getId().equals(setting.getString("id",""))){
+                    if (rTask.getId().equals(setting.getString(LOGIN_ID,"")))
                         return;
-                    }else{
-                        String path = dataSnapshot.getKey();
-                        mLatitude = rTask.getLatitude();
-                        mLongitude = rTask.getLongitude();
-                        distance = Math.abs(mLongitude - 100) + Math.abs(mLatitude - 100);
-                        if (distance <= fDistance) {
-                            Intent intent = new Intent(RetrievePostService.this, CustomDialogActivity.class);
-                            intent.putExtra("content", rTask.getTaskContent());
-                            intent.putExtra("title", rTask.getTaskTittle());
-                            intent.putExtra("id",rTask.getId());
-                            intent.putExtra("path",path);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    String path = dataSnapshot.getKey();
+                    mLatitude = rTask.getLatitude();
+                    mLongitude = rTask.getLongitude();
+                    distance =Math.max(Math.abs(mLongitude - mCurrentLocation.getLongitude()),
+                                        Math.abs(mLatitude - mCurrentLocation.getLatitude()));
+                    if (distance <= fDistance) {
+                        Intent intent = new Intent(
+                                RetrievePostService.this,
+                                CustomDialogActivity.class
+                        );
+                        intent.putExtra(DELIVER_TASK_CONTENT, rTask.getTaskContent());
+                        intent.putExtra(DELIVER_TASK_TITLE, rTask.getTaskTittle());
+                        intent.putExtra(DELIVER_TASK_ID, rTask.getId());
+                        intent.putExtra(DELIVER_TASK_TITLE, path);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        if(setting.getBoolean(LOGIN_NOTIFICATION,false)){
+                                PendingIntent resultPendingIntent =
+                                        PendingIntent.getActivity(RetrievePostService.this,
+                                                0,
+                                                intent,
+                                                PendingIntent.FLAG_UPDATE_CURRENT);
+                                mbuilder.setContentIntent(resultPendingIntent);
+                                mNotificationManager.notify(1,mbuilder.build());
+                        }else {
                             startActivity(intent);
                         }
                     }
@@ -137,7 +166,7 @@ public class RetrievePostService extends Service implements GoogleApiClient.OnCo
     }
 
     protected void createLocationRequest() {
-        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -156,15 +185,10 @@ public class RetrievePostService extends Service implements GoogleApiClient.OnCo
     @Override
     public void onConnected(Bundle connectionHint) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
+        createLocationRequest();
+        mCurrentLocation = new Location("myCurrentLocation");
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }

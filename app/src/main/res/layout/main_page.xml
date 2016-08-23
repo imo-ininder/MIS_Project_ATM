@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -7,19 +7,13 @@
     android:weightSum="1"
     tools:context=".main_page">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.10">
-
-    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:id="@+id/linearLayout3">
 
         <TextView
             android:layout_width="wrap_content"
@@ -36,108 +30,117 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="1"
-        android:layout_weight="0.03">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="67dp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="主選單"
-            android:id="@+id/textView8"
-            android:layout_weight="0.45"
-            android:textColor="#888282"
-            android:maxWidth="20dp"
-            android:textSize="40dp" />
+        android:layout_weight="0.03"
+        android:id="@+id/linearLayout2"
+        android:layout_alignParentTop="true">
 
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="75dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="主選單"
+        android:id="@+id/textView8"
+        android:layout_weight="0.45"
+        android:textColor="#888282"
+        android:maxWidth="20dp"
+        android:textSize="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/linearLayout3" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:weightSum="1">
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/relativeLayout"
+        android:id="@+id/relativeLayout2"
+        android:layout_below="@+id/textView8"
+        android:layout_alignParentBottom="true">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="218dp"
-            android:layout_height="match_parent"
-            android:weightSum="1">
+        <ImageView
+            android:layout_width="124dp"
+            android:layout_height="119dp"
+            android:text="歷史紀錄"
+            android:id="@+id/button3"
+            android:src="@drawable/blue_histroy"
+            android:onClick="unfinish"
+            android:layout_gravity="right"
+            android:layout_alignTop="@+id/postBtm"
+            android:layout_alignStart="@+id/button2" />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Post"
-                android:id="@+id/postBtm"
-                android:onClick="gotopostnew" />
+        <ImageView
+                    android:layout_width="265dp"
+                    android:layout_height="258dp"
+                    android:text="Post"
+                    android:id="@+id/postBtm"
+                    android:src="@drawable/blue_chatstatus"
+                    android:onClick="gotopostnew"
+            android:layout_marginTop="46dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignEnd="@+id/aboutBtn"
+            android:layout_alignParentStart="true" />
 
-        </LinearLayout>
+        <ImageView
+                android:layout_width="117dp"
+                android:layout_height="118dp"
+                android:text="個人資料"
+                android:id="@+id/aboutBtn"
+                android:onClick="gotoabout"
+                android:src="@drawable/blue_person"
+            android:layout_centerHorizontal="true"
+            android:layout_alignTop="@+id/button6"
+            android:layout_alignBottom="@+id/button6" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="125dp"
-            android:layout_height="wrap_content"
-            android:weightSum="1">
-
-            <Button
-                android:layout_width="144dp"
+        <ImageView
+                android:layout_width="119dp"
                 android:layout_height="110dp"
-                android:text="歷史紀錄"
-                android:id="@+id/button3"
-                android:onClick="unfinish" />
-
-            <Button
-                android:layout_width="135dp"
-                android:layout_height="121dp"
-                android:text="使用指南"
-                android:id="@+id/button2"
-                android:layout_gravity="bottom"
-                android:onClick="unfinish" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="645dp"
-        android:layout_height="141dp"
-        android:weightSum="1">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.10">
-
-            <Button
-                android:layout_width="135dp"
-                android:layout_height="match_parent"
-                android:text="設定"
-                android:id="@+id/button6"
-                android:onClick="gotosettings" />
-        </LinearLayout>
-
-        <Button
-            android:layout_width="131dp"
-            android:layout_height="match_parent"
-            android:text="個人資料"
-            android:id="@+id/aboutBtn"
-            android:onClick="gotoabout" />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:weightSum="1">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
                 android:text="登出"
+                android:src="@drawable/blue_logout"
                 android:id="@+id/btnLogout"
-                android:layout_weight="0.06"
-                android:onClick="logoutt" />
-        </LinearLayout>
+                android:layout_weight="0.10"
+                android:onClick="logoutt"
+            android:layout_alignTop="@+id/aboutBtn"
+            android:layout_alignEnd="@+id/button3"
+            android:layout_alignBottom="@+id/button6" />
 
-    </LinearLayout>
+        <ImageView
+                    android:layout_width="128dp"
+                    android:layout_height="119dp"
+                    android:text="使用指南"
+                    android:id="@+id/button2"
+                    android:src="@drawable/blue_use"
+                    android:onClick="gotogui"
+            android:layout_above="@+id/aboutBtn"
+            android:layout_alignParentEnd="true" />
 
-</LinearLayout>
+        <ImageView
+                    android:layout_width="118dp"
+                    android:layout_height="158dp"
+                    android:text="設定"
+                    android:id="@+id/button6"
+                    android:src="@drawable/blue_settings"
+                    android:onClick="gotosettings"
+            android:layout_below="@+id/postBtm"
+          />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/aboutBtn"></RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="3dp"
+        android:layout_height="300dp"
+        android:id="@+id/relativeLayout"
+        android:layout_alignBottom="@+id/relativeLayout2"
+        android:layout_alignParentStart="true"></RelativeLayout>
+
+
+</RelativeLayout>

@@ -10,7 +10,8 @@ public class Task {
     private String id;
     private Double longitude ,latitude;
     public Task(){}
-    public Task(String taskTittle,String taskLocation,String taskContent,String id,Double longitude,Double latitude) {
+    public Task(String taskTittle,String taskLocation,String taskContent,String id,
+                Double longitude,Double latitude) {
         this.taskTittle = taskTittle;
         this.taskContent = taskContent;
         this.taskLocation = taskLocation;
