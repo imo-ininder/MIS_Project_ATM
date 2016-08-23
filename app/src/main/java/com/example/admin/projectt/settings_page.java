@@ -176,11 +176,9 @@ public class settings_page extends AppCompatActivity implements Constant{
 
 
     public void updatepwd(View v){
-        String myhash=getmyhash.getString("UserKey","00");
-        if(myhash.equals("00")){
-            Toast.makeText(settings_page.this, "您是舊會員請重新註冊一模一樣的帳號", Toast.LENGTH_SHORT).show();
-        }
-        else{
+      
+     
+      
 
             reff.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -218,7 +216,7 @@ public class settings_page extends AppCompatActivity implements Constant{
                 }
             });
 
-        }
+        
 
     }
 
