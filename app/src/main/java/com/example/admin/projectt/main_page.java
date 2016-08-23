@@ -16,7 +16,7 @@ public class main_page extends AppCompatActivity{
     Intent intent;
     SharedPreferences chatData;
     SharedPreferences settler;
-   static  int judgechat=0;
+    int judgechat=0;
     ImageView post,logout,history_btn,guide_btn,about_btn,setting_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
