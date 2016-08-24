@@ -66,7 +66,7 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
         }
 
         final Button btn_submit_task = (Button) findViewById(R.id.btn_submit_task);
-        final Button btnPlacePicker = (Button) findViewById(R.id.btnPlacePicker);
+       final ImageView btnPlacePicker = (ImageView) findViewById(R.id.btnPlacePicker);
         btn_submit_task.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v) {
