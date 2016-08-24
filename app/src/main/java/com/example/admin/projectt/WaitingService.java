@@ -63,11 +63,9 @@ public class WaitingService extends Service implements ChatConstant ,Constant{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-
         //拿到自己任務的Firebase路徑
         postRef = ref.child(intent.getStringExtra(DELIVER_TASK_PATH));
         title = intent.getStringExtra(DELIVER_TASK_TITLE);
-
         Log.d("pathDebug",intent.getStringExtra(DELIVER_TASK_PATH));
         Log.d("Title",title);
 

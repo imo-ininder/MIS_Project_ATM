@@ -19,7 +19,8 @@
             android:layout_height="60dp"
             android:layout_margin="0dp"
             android:focusable="true"
-            android:background="#ffff3826">
+            android:background="#ffff3826"
+            android:id="@+id/title_bar">
 
             <Button
                 style="?android:attr/buttonStyleSmall"

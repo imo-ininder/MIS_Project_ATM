@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -27,10 +26,12 @@ public class NFCPageActivity extends AppCompatActivity  implements Constant{
     SharedPreferences setting;
     NdefMessage msg;
     SharedPreferences chatData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfcpage);
+
         Firebase.setAndroidContext(this);
         chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
 
@@ -85,7 +86,6 @@ public class NFCPageActivity extends AppCompatActivity  implements Constant{
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-
             }
         });
     }

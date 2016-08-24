@@ -9,5 +9,4 @@
         android:text="Waiting"
         android:id="@+id/NFCtestTV"
         android:textSize="40pt" />
-
 </LinearLayout>

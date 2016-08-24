@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
+<<<<<<< HEAD
 import android.support.annotation.NonNull;
+=======
+>>>>>>> origin/mai
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -14,6 +17,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
@@ -25,11 +29,11 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 
 
 /**
@@ -72,7 +76,7 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
         }
 
         final Button btn_submit_task = (Button) findViewById(R.id.btn_submit_task);
-        final Button btnPlacePicker = (Button) findViewById(R.id.btnPlacePicker);
+        final ImageView btnPlacePicker = (ImageView) findViewById(R.id.btnPlacePicker);
 
         btn_submit_task.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -103,7 +107,6 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
                         id,
                         mLongitude,
                         mLatitude) ;
-
                 Map<String,String> historyContent = new HashMap<String, String>();
                 historyContent.put("location",t.getTaskLocation());
                 historyContent.put("content",t.getTaskContent());

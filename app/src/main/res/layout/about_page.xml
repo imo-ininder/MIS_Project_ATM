@@ -127,21 +127,6 @@
                 android:layout_height="78dp"
                 android:layout_weight="0.19">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="訊息中心:    "
-                    android:id="@+id/textView19" />
-
-                <Button
-                    android:layout_width="54dp"
-                    android:layout_height="37dp"
-                    android:text="2"
-                    android:background="@drawable/btn_shape"
-                    android:id="@+id/messagebtn"
-                    android:onClick="gotomessagecenter" />
-
             </LinearLayout>
         </LinearLayout>
 

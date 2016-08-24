@@ -1,7 +1,10 @@
 package com.example.admin.projectt;
 
 import android.content.Intent;
+<<<<<<< HEAD
 import android.content.SharedPreferences;
+=======
+>>>>>>> origin/mai
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ import java.util.Map;
 /**
  * Created by imo on 2016/8/4.
  */
+
 public class ReciveNFCActivity extends AppCompatActivity implements ChatConstant{
     TextView NFCtestTV;
     SharedPreferences chatData;
@@ -26,8 +30,10 @@ public class ReciveNFCActivity extends AppCompatActivity implements ChatConstant
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recivenfc);
+
         Firebase.setAndroidContext(this);
         chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
+
     }
     @Override
     public void onResume() {
@@ -50,6 +56,7 @@ public class ReciveNFCActivity extends AppCompatActivity implements ChatConstant
         // only one message sent during the beam
         NdefMessage msg = (NdefMessage) rawMsgs[0];
         // record 0 contains the MIME type, record 1 is the AAR, if present
+
         String textMessage = new String(msg.getRecords()[0].getPayload());
         NFCtestTV.setText(textMessage);
         if(textMessage.equals(CHAT_NFC_CHECK_MSG)){
@@ -63,5 +70,6 @@ public class ReciveNFCActivity extends AppCompatActivity implements ChatConstant
                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             Toast.makeText(ReciveNFCActivity.this,"任務完成",Toast.LENGTH_LONG).show();
         }
+
     }
 }
