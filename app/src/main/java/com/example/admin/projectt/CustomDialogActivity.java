@@ -21,9 +21,10 @@ import com.firebase.client.ValueEventListener;
 public class CustomDialogActivity extends Activity implements Constant {
     Button btn_confirm,btn_cancel;
     TextView text_content,text_title,text_close;
+     RelativeLayout title_bar;
     Firebase ref;
     Bundle extras;
-    SharedPreferences setting,chatData;
+    SharedPreferences setting,chatData,setcolor;
     @Override    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_dialog);
@@ -42,6 +43,7 @@ public class CustomDialogActivity extends Activity implements Constant {
         text_close = (TextView)findViewById(R.id.text_close);
         text_title  = (TextView)findViewById(R.id.text_title);
         text_content = (TextView)findViewById(R.id.text_content);
+        title_bar = (RelativeLayout) findViewById(R.id.title_bar);
         //end of init
 
         //get task information
@@ -100,5 +102,33 @@ public class CustomDialogActivity extends Activity implements Constant {
                 finish();
             }
         });
+        
+        setcolor = getSharedPreferences("set", 0);          //換顏色
+        int colorr =  setcolor.getInt("color",1);
+        switch(colorr){
+            case 1:
+
+               title_bar.setBackgroundColor(Color.parseColor("#3bb6d2"));
+
+                break;
+            case 2:
+
+                title_bar.setBackgroundColor(Color.parseColor("#eb1346"));
+
+                break;
+            case 3:
+
+                title_bar.setBackgroundColor(Color.parseColor("#fabf0c"));
+
+                break;
+            case 4:
+
+                title_bar.setBackgroundColor(Color.parseColor("#673AB7"));
+
+                break;
+
+        }
+
+        
     }
 }
