@@ -29,7 +29,7 @@ public class settings_page extends AppCompatActivity implements Constant{
     SharedPreferences setting;
     SharedPreferences settler;
     SharedPreferences getmyhash;
-    EditText  pwd_change;
+    EditText  pwd_change,pwd_old;
     SharedPreferences getemail;
     Firebase reff = new Firebase("https://mis-atm.firebaseio.com/userdata");
     Switch s;
@@ -54,7 +54,7 @@ public class settings_page extends AppCompatActivity implements Constant{
         mRadioGroup = (RadioGroup)findViewById(R.id.radioGroup);
 
         pwd_change=(EditText) findViewById(R.id.editText);
-
+        pwd_old=(EditText) findViewById(R.id.editText2);
 
         if(setting.getBoolean(LOGIN_RETRIEVE_SERVICE,false)) {
             s.setChecked(true);
@@ -152,6 +152,13 @@ public class settings_page extends AppCompatActivity implements Constant{
     String emailstr,pwdstr,pwdhintstr,namestr,idstr,rstr;
 
     public void updatepwd(View v){
+        if ("".equals(pwd_old.getText().toString().trim())){
+                Toast.makeText(settings_page.this,"請輸入原本的密碼",Toast.LENGTH_SHORT)
+                        .show();
+            }
+            else{
+
+
 
             reff.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -159,33 +166,44 @@ public class settings_page extends AppCompatActivity implements Constant{
                     for (DataSnapshot d:dataSnapshot.getChildren()) {
 
                         if(!d.child("email").getValue().toString().equals(getemail.getString("email"," "))){
-                            return;
+                                continue;
                         }
                         else{
                             String myhash= d.getKey();
-                            if (pwd_change.getText().equals("")){
+                            if ("".equals(pwd_change.getText().toString().trim())){
                                 Toast.makeText(settings_page.this,"新密碼不能為空白",Toast.LENGTH_SHORT)
                                         .show();
                                 return;
                             }
-                            String newpwd= pwd_change.getText().toString();
-                            emailstr= d.child("email").getValue().toString();
-                            pwdstr= d.child("password").getValue().toString();
-                            pwdhintstr= d.child("passwordHint").getValue().toString();
-                            namestr=d.child("name").getValue().toString();
-                            idstr=d.child("id").getValue().toString();
-                            rstr=d.child("gender").getValue().toString();
-                            UserData userDatachange = new UserData(emailstr
-                                    ,newpwd
-                                    ,pwdhintstr
-                                    ,namestr
-                                    ,idstr
-                                    ,rstr);
-                            Firebase user=reff.child(myhash);
-                            user.setValue(userDatachange);
-                            Toast.makeText(settings_page.this, "密碼修改完成", Toast.LENGTH_SHORT)
-                                    .show();
-                            break;
+
+                            if(pwd_old.getText().toString().equals(d.child("password").getValue().toString())) {
+
+
+                                String newpwd = pwd_change.getText().toString();
+                                emailstr = d.child("email").getValue().toString();
+                                pwdstr = d.child("password").getValue().toString();
+                                pwdhintstr = d.child("passwordHint").getValue().toString();
+                                namestr = d.child("name").getValue().toString();
+                                idstr = d.child("id").getValue().toString();
+                                rstr = d.child("gender").getValue().toString();
+                                UserData userDatachange = new UserData(emailstr
+                                        , newpwd
+                                        , pwdhintstr
+                                        , namestr
+                                        , idstr
+                                        , rstr);
+                                Firebase user = reff.child(myhash);
+                                user.setValue(userDatachange);
+                                Toast.makeText(settings_page.this, "密碼修改完成", Toast.LENGTH_SHORT)
+                                        .show();
+                                break;
+                            }
+                            else{
+                                Toast.makeText(settings_page.this, "和原密碼不相符，修改失敗", Toast.LENGTH_SHORT)
+                                        .show();
+                                break;
+                            }
+
                         }
                     }
 
@@ -194,6 +212,7 @@ public class settings_page extends AppCompatActivity implements Constant{
                 public void onCancelled(FirebaseError firebaseError) {
                 }
             });
+            }
 
     }
 
