@@ -118,8 +118,10 @@ public class main_page extends AppCompatActivity{
             if(judgechat==1){
                 post.setImageResource(R.drawable.blue_chatstatus);
             }
-
-            post.setImageResource(R.drawable.blue_post);
+            else{
+                post.setImageResource(R.drawable.blue_post);
+            }
+           
             logout.setImageResource(R.drawable.blue_logout);
             history_btn.setImageResource(R.drawable.blue_histroy);
             guide_btn.setImageResource(R.drawable.blue_use);
@@ -131,8 +133,10 @@ public class main_page extends AppCompatActivity{
             if(judgechat==1){
                 post.setImageResource(R.drawable.red_chatstatus);
             }
-
-            post.setImageResource(R.drawable.red_post);
+             else{
+              post.setImageResource(R.drawable.red_post);
+            }
+            
             logout.setImageResource(R.drawable.red_logout);
             history_btn.setImageResource(R.drawable.red_histroy);
             guide_btn.setImageResource(R.drawable.red_use);
@@ -143,8 +147,9 @@ public class main_page extends AppCompatActivity{
             if(judgechat==1){
                 post.setImageResource(R.drawable.yellow_chatstatus);
             }
-
-            post.setImageResource(R.drawable.yellow_post);
+            else{
+                  post.setImageResource(R.drawable.yellow_post);
+            }
             logout.setImageResource(R.drawable.yellow_logout);
             history_btn.setImageResource(R.drawable.yellow_histroy);
             guide_btn.setImageResource(R.drawable.yellow_use);
@@ -155,8 +160,9 @@ public class main_page extends AppCompatActivity{
             if(judgechat==1){
                 post.setImageResource(R.drawable.purple_chatstatus);
             }
-
-            post.setImageResource(R.drawable.purple_post);
+            else{
+                 post.setImageResource(R.drawable.purple_post);
+            }
             logout.setImageResource(R.drawable.purple_logout);
             history_btn.setImageResource(R.drawable.purple_histroy);
             guide_btn.setImageResource(R.drawable.purple_use);
