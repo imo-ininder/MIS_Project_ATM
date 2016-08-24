@@ -148,6 +148,31 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+         SharedPreferences  setcolor = getSharedPreferences("set", 0);          //換顏色
+        int colorr =  setcolor.getInt("color",1);
+        switch(colorr){
+            case 1:
+
+                toolbar.setBackgroundColor(Color.parseColor("#3bb6d2"));
+
+                break;
+            case 2:
+
+                toolbar.setBackgroundColor(Color.parseColor("#eb1346"));
+
+                break;
+            case 3:
+
+                toolbar.setBackgroundColor(Color.parseColor("#fabf0c"));
+
+                break;
+            case 4:
+
+                toolbar.setBackgroundColor(Color.parseColor("#673AB7"));
+
+                break;
+
+        }
 
     }
 
