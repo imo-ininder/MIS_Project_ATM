@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,8 +38,7 @@ public class HistoryActivity extends AppCompatActivity implements Constant{
         setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
         mlv = (ListView) findViewById(R.id.lvHistory);
 
-        testData();
-        mlv.setAdapter(mAdapter);
+        getData();
         mlv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -64,18 +64,19 @@ public class HistoryActivity extends AppCompatActivity implements Constant{
             }
         });
     }
-    //尚未完成
     private void getData(){
         ref.child(setting.getString(LOGIN_ID,""))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.hasChildren())
-                    return;
-                title.add(dataSnapshot.getKey());
+
+                for(DataSnapshot d:dataSnapshot.getChildren()){
+                    title.add(d.getKey());
+                }
                 mAdapter = new ArrayAdapter<>(HistoryActivity.this
                         ,android.R.layout.simple_list_item_1
                         ,title);
+                mlv.setAdapter(mAdapter);
             }
 
             @Override

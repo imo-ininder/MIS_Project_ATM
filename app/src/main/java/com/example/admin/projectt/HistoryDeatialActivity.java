@@ -21,7 +21,8 @@ public class HistoryDeatialActivity extends AppCompatActivity {
 
         tv1.setText(extras.getString("title","ATM"));
         String detail = "地點:" + extras.getString("location") + "\n"
-                + "任務內容" + extras.getString("content");
+                + "任務內容:" + extras.getString("content")+ "\n"
+                + "任務狀態:" + extras.getString("state");
         tv2.setText(detail);
 
     }

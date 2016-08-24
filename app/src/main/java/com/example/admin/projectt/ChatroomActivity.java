@@ -34,9 +34,12 @@ import com.firebase.client.FirebaseError;
 import android.os.Build;
 import android.support.v7.app.ActionBarDrawerToggle;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ChatroomActivity extends AppCompatActivity implements ChatConstant,Constant {
 
-    Firebase ref ,chatRef;
+    Firebase ref ,chatRef,historyRef;
     SharedPreferences chatData,setting;
     EditText et;
     TextView tvContent;
@@ -63,6 +66,8 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
         setting  = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
         ref     = new Firebase("https://mis-atm.firebaseio.com/chat");
+        historyRef = new Firebase("https://mis-atm.firebaseio.com/history")
+                .child(setting.getString(LOGIN_ID,""));
         chatRef = ref.child(chatData.getString(CHAT_PATH,""));
         myId  = setting.getString(LOGIN_ID,"");
 
@@ -209,6 +214,9 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                                 .putBoolean(CHAT_STATE,false)
                                 .putBoolean(CHAT_IS_DOUBLE_CHECKED,false)
                                 .apply();
+                        Map<String, Object> state = new HashMap<String, Object>();
+                        state.put("state","被取消");
+                        historyRef.child(chatData.getString(CHAT_TITLE,"ATM")).updateChildren(state);
                         Intent i = new Intent(ChatroomActivity.this,main_page.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(i);

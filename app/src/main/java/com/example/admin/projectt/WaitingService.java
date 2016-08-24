@@ -14,6 +14,8 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -23,7 +25,7 @@ import java.util.logging.Logger;
 public class WaitingService extends Service implements ChatConstant ,Constant{
     IBinder mBinder = new LocalBinder();
     CountDownTimer ct;
-    Firebase ref,postRef;
+    Firebase ref,postRef,historyRef;
     String title;
     SharedPreferences setting,chatData;
     public class LocalBinder extends Binder {
@@ -41,9 +43,11 @@ public class WaitingService extends Service implements ChatConstant ,Constant{
         super.onCreate();
         Firebase.setAndroidContext(this);
 
-        ref = new Firebase("https://mis-atm.firebaseio.com/task");
         setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
         chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
+
+        ref = new Firebase("https://mis-atm.firebaseio.com/task");
+        historyRef =new Firebase("https://mis-atm.firebaseio.com/history").child(setting.getString(LOGIN_ID,""));
 
         Log.d("ServiceDebug","START");
         ct = new CountDownTimer(30000,1000) {
@@ -55,6 +59,9 @@ public class WaitingService extends Service implements ChatConstant ,Constant{
             @Override
             public void onFinish() {
                 postRef.removeValue();
+                Map<String, Object> state = new HashMap<String, Object>();
+                state.put("state","沒人回應");
+                historyRef.child(title).updateChildren(state);
                 Toast.makeText(WaitingService.this,"任務已過時效",Toast.LENGTH_SHORT).show();
                 WaitingService.this.stopSelf();
             }
@@ -79,6 +86,9 @@ public class WaitingService extends Service implements ChatConstant ,Constant{
                             .putBoolean(CHAT_TASK_SENDER,true)
                             .apply();
                     postRef.removeValue();
+                    Map<String, Object> state = new HashMap<String, Object>();
+                    state.put("state","進行中");
+                    historyRef.child(title).updateChildren(state);
                     Intent i = new Intent(WaitingService.this, ChatroomActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);

@@ -14,6 +14,9 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Created by imo on 2016/8/4.
@@ -24,7 +27,7 @@ public class NFCPageActivity extends AppCompatActivity  implements Constant{
     SharedPreferences setting;
     NdefMessage msg;
     SharedPreferences chatData;
-
+    Firebase historyRef;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -32,8 +35,12 @@ public class NFCPageActivity extends AppCompatActivity  implements Constant{
 
         Firebase.setAndroidContext(this);
         chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
-
         setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
+
+        historyRef = new Firebase("https://mis-atm.firebaseio.com/history")
+                .child(setting.getString(LOGIN_ID,""))
+                .child(chatData.getString(CHAT_TITLE,""));
+
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         msg = new NdefMessage(new NdefRecord[]{
@@ -59,7 +66,9 @@ public class NFCPageActivity extends AppCompatActivity  implements Constant{
                     chatData.edit().putBoolean(CHAT_STATE,false)
                             .apply();
                     charRef.removeValue();
-
+                    Map<String, Object> state = new HashMap<String, Object>();
+                    state.put("state","已完成");
+                    historyRef.updateChildren(state);
                     finish();
                     startActivity(new Intent(NFCPageActivity.this,main_page.class)
                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

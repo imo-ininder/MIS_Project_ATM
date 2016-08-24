@@ -59,6 +59,7 @@ public class settings_page extends AppCompatActivity implements Constant{
         if(setting.getBoolean(LOGIN_RETRIEVE_SERVICE,false)) {
             s.setChecked(true);
         }else{
+            s.setChecked(false);
             r1.setClickable(false);
             r2.setClickable(false);
         }

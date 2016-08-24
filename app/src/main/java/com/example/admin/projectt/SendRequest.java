@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -21,6 +24,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.location.places.Places;
@@ -37,7 +41,7 @@ import java.util.Set;
  */
 public class SendRequest extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks, Constant{
-
+    Location mLastLocation;
     GoogleApiClient mGoogleApiClient;
     Double mLongitude,mLatitude;
     SharedPreferences setting;
@@ -46,7 +50,20 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) { }
     @Override
-    public void onConnected(Bundle connectionHint) { }
+    public void onConnected(Bundle connectionHint) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mLastLocation = new Location("myLocation");
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            mLatitude = mLastLocation.getLatitude();
+            mLongitude = mLastLocation.getLongitude();
+        }
+    }
     @Override
     public void onConnectionSuspended(int i) { }
 
@@ -66,6 +83,7 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(Places.GEO_DATA_API)
                     .addApi(Places.PLACE_DETECTION_API)
+                    .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
@@ -78,7 +96,7 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
             @Override
             public void onClick (View v) {
                 Firebase taskRef= ref.child("task");
-                Firebase historyRef = ref.child("history");
+                Firebase historyRef = ref.child("history").child(setting.getString(LOGIN_ID,""));
                 Firebase newPostRef = taskRef.push();
                 EditText title = (EditText)findViewById(R.id.taskTitle);
                 EditText location = (EditText)findViewById(R.id.taskLocation);
@@ -106,12 +124,10 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
                 Map<String,String> historyContent = new HashMap<String, String>();
                 historyContent.put("location",t.getTaskLocation());
                 historyContent.put("content",t.getTaskContent());
-
-                Map<String,Map<String,String>> history = new HashMap<String, Map<String, String>>();
-                history.put(t.getTaskTittle(),historyContent);
+                historyContent.put("state","等待中");
 
                 newPostRef.setValue(t);
-                historyRef.child(setting.getString(LOGIN_ID,"")).setValue(history);
+                historyRef.child(t.getTaskTittle()).setValue(historyContent);
                 Toast.makeText(SendRequest.this, "發送成功!", Toast.LENGTH_SHORT).show();
 
                 //開啟Service等待回應,回到主畫面
