@@ -1,10 +1,7 @@
 package com.example.admin.projectt;
 
 import android.content.Intent;
-<<<<<<< HEAD
 import android.content.SharedPreferences;
-=======
->>>>>>> origin/mai
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;

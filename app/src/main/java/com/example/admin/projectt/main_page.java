@@ -92,6 +92,7 @@ public class main_page extends AppCompatActivity implements Constant{
                 SharedPreferences setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE, 0);
                 setting.edit().putBoolean(LOGIN_STATE,false).apply();
                 Intent i = new Intent(main_page.this, first_page.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
                 main_page.this.finish();
             }

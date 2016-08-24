@@ -24,9 +24,7 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true" />
+        layout="@layout/toolbar" />
 
 
     <Button

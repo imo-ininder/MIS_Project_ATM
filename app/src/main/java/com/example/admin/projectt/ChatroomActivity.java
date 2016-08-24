@@ -1,7 +1,10 @@
 package com.example.admin.projectt;
 
 
-<<<<<<< HEAD
+import android.graphics.Color;
+import android.support.v7.app.AppCompatActivity;
+
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,11 +12,6 @@ import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.provider.Settings;
-=======
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
->>>>>>> origin/mai
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,15 +33,9 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import android.os.Build;
 import android.support.v7.app.ActionBarDrawerToggle;
-<<<<<<< HEAD
-
-
-public class ChatroomActivity extends AppCompatActivity implements Constant {
-=======
-
 
 public class ChatroomActivity extends AppCompatActivity implements ChatConstant,Constant {
->>>>>>> origin/mai
+
     Firebase ref ,chatRef;
     SharedPreferences chatData,setting;
     EditText et;
@@ -85,7 +77,6 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(chatData.getString(CHAT_TITLE,"ATM"));
         this.setSupportActionBar(this.toolbar);
-<<<<<<< HEAD
 
         //新增側邊欄裡的選項
         drawerItem[0] = new ObjectDrawerItem("");
@@ -99,23 +90,6 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         drawerItem[8] = new ObjectDrawerItem("google 相簿");
         //end of initialization
 
-
-=======
-
-        //新增側邊欄裡的選項
-        drawerItem[0] = new ObjectDrawerItem("");
-        drawerItem[1] = new ObjectDrawerItem("放棄");
-        drawerItem[2] = new ObjectDrawerItem("協議取消");
-        drawerItem[3] = new ObjectDrawerItem("完成");
-        drawerItem[4] = new ObjectDrawerItem(" ");
-        drawerItem[5] = new ObjectDrawerItem(" ");
-        drawerItem[6] = new ObjectDrawerItem("拍照");
-        drawerItem[7] = new ObjectDrawerItem("本機相簿");
-        drawerItem[8] = new ObjectDrawerItem("google 相簿");
-        //end of initialization
-
-
->>>>>>> origin/mai
         //Change btn in main activity from "POST" to "CHAT"
         chatData.edit().putBoolean(CHAT_STATE,true).apply();
 
@@ -151,18 +125,12 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
             public void onClick(View view) {
                 chatData.edit().putString(CHAT_PATH,"")
                         .putString(CHAT_TITLE,"")
-<<<<<<< HEAD
                         .putBoolean(CHAT_STATE,false)
                         .putBoolean(CHAT_IS_DOUBLE_CHECKED,false)
                         .apply();
                 chatRef.child("cancel").setValue(myId);
                 Intent i = new Intent(ChatroomActivity.this,main_page.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-=======
-                        .putBoolean(CHAT_STATE,false).apply();
-                chatRef.child("cancel").setValue(myId);
-                Intent i = new Intent(ChatroomActivity.this,main_page.class);
->>>>>>> origin/mai
                 startActivity(i);
                 finish();
             }
@@ -190,8 +158,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-<<<<<<< HEAD
-=======
+
          SharedPreferences  setcolor = getSharedPreferences("set", 0);          //換顏色
         int colorr =  setcolor.getInt("color",1);
         switch(colorr){
@@ -217,7 +184,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                 break;
 
         }
->>>>>>> origin/mai
+
 
     }
 
@@ -237,7 +204,6 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                     if(!dataSnapshot.getValue().toString().equals(setting.getString(LOGIN_ID,""))) {
                         Toast.makeText(ChatroomActivity.this, "對方已經離開聊天室", Toast.LENGTH_SHORT)
                                 .show();
-<<<<<<< HEAD
                         chatData.edit().putString(CHAT_PATH,"")
                                 .putString(CHAT_TITLE,"")
                                 .putBoolean(CHAT_STATE,false)
@@ -250,13 +216,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                     }
 
                 } else if(!dataSnapshot.getKey().equals(CHAT_NFC_CHECK_MSG)) {
-=======
-                    }
-                    Intent i = new Intent(ChatroomActivity.this,main_page.class);
-                    startActivity(i);
-                    finish();
-                } else {
->>>>>>> origin/mai
+
                     Message m = dataSnapshot.getValue(Message.class);
                     tvContent.append(m.getAuthor() + ":" + m.getMessage() + "\n");
                 }
@@ -275,15 +235,12 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         });
     }
 
-<<<<<<< HEAD
     @Override
     protected void onResume(){
         super.onResume();
         et.setText("");
     }
 
-=======
->>>>>>> origin/mai
     //判斷選了哪一個選項
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
@@ -336,7 +293,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                         }).show();
                 break;
             case 3: //NFC 認證
-<<<<<<< HEAD
+
                 NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
                 NfcAdapter adapter = manager.getDefaultAdapter();
                 if(adapter!= null && adapter.isEnabled()){
@@ -350,20 +307,12 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                 }else{
                     startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
                 }
-=======
-                Intent i = new Intent(ChatroomActivity.this,NFCPageActivity.class);
-                startActivity(i);
->>>>>>> origin/mai
                 break;
             default:
                 break;
         }
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/mai
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 

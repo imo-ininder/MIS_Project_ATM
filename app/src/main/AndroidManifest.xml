@@ -68,14 +68,8 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ChatroomActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity
             android:name=".guidance"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".NFCPageActivity"
             android:label="@string/app_name"
@@ -91,11 +85,8 @@
         <activity
             android:name=".ChatroomActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".NFCPageActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".ReciveNFCActivity"
             android:label="@string/app_name"
