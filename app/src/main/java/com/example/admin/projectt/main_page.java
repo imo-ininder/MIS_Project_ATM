@@ -16,7 +16,7 @@ public class main_page extends AppCompatActivity{
     Intent intent;
     SharedPreferences chatData;
     SharedPreferences settler,settler2;
-    int judgechat=0;
+    static int judgechat;
     ImageView post,logout,history_btn,guide_btn,about_btn,setting_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class main_page extends AppCompatActivity{
         guide_btn = (ImageView) findViewById(R.id.button2);
         about_btn = (ImageView) findViewById(R.id.aboutBtn);
         setting_btn= (ImageView) findViewById(R.id.button6);
-
+         judgechat=0;
         chatData = getSharedPreferences("ATM_chatData", 0);
 
 
