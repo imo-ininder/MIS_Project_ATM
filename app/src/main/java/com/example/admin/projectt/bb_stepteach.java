@@ -11,6 +11,6 @@ public class bb_stepteach extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bb_stepteach);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 }
