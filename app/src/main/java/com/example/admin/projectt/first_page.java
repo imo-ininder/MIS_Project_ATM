@@ -23,7 +23,8 @@ public class first_page extends AppCompatActivity implements Constant{
     private UserData userData;
     private ProgressDialog pd;
     private Boolean loginFlag = false;
-
+    private AutoCompleteTextView textemail;
+    
     SharedPreferences setting;
     Firebase ref;
     @Override
@@ -40,6 +41,7 @@ public class first_page extends AppCompatActivity implements Constant{
         setContentView(R.layout.first_page_layout);
         Firebase.setAndroidContext(this);
         ref = new Firebase("https://mis-atm.firebaseio.com/userdata");
+        textemail=(AutoCompleteTextView)findViewById(R.id.loginEmail);
         Button signInBtn = (Button) findViewById(R.id.signInButton);
         signInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,9 +56,44 @@ public class first_page extends AppCompatActivity implements Constant{
         Intent it =new Intent(this,sign_up.class);
         startActivity(it);
     }
-    public void pwd_help(View view){
+    public void pwd_help(View v) {
+            if ("".equals(textemail.getText().toString().trim())) {
+                Toast.makeText(first_page.this, "E-mail不可為空白", Toast.LENGTH_SHORT)
+                        .show();
+            } else {
 
-    }
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        int flag = 0;
+                        for (DataSnapshot d : dataSnapshot.getChildren()) {
+
+                            if (!d.child("email").getValue().toString().equals(textemail.getText().toString())) {
+                                continue;
+                            } else {
+                                flag = 1;
+                                Toast.makeText(first_page.this, "密碼提示:"+d.child("passwordHint").getValue().toString(), Toast.LENGTH_SHORT)
+                                        .show();
+                                break;
+
+                            }
+                        }
+                        if (flag == 0) {
+                            Toast.makeText(first_page.this, "找不到此帳戶", Toast.LENGTH_SHORT)
+                                    .show();
+                            return;
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
+            }
+        }
 
     class Checking extends AsyncTask<String,Void,Boolean> {
         @Override
