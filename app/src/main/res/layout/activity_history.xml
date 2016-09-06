@@ -3,8 +3,21 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:layout_width="236dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="歷史紀錄"
+        android:id="@+id/textView24"
+        android:textColor="#888282"
+        android:maxWidth="20dp"
+        android:textSize="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/linearLayout3" />
+
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="394dp"
         android:id="@+id/lvHistory" />
 </LinearLayout>
