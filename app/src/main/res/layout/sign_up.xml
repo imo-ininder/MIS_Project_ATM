@@ -24,11 +24,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="註冊新帳號"
+            android:text="SIGN UP"
             android:id="@+id/signup"
             android:layout_gravity="center_horizontal"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:textSize="35dp" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -261,8 +262,35 @@
             android:text="提交"
             android:id="@+id/submitUserData"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="37dp"
+            android:layout_below="@+id/linearLayout"
+            android:layout_toEndOf="@+id/textView24" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="輸入驗證碼:"
+            android:id="@+id/textView24"
+            android:layout_marginTop="32dp"
+            android:layout_below="@+id/submitUserData"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText3"
+            android:layout_alignTop="@+id/textView24"
+            android:layout_alignStart="@+id/signup"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="完成!"
+            android:id="@+id/button"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignStart="@+id/submitUserData" />
 
     </RelativeLayout>
 
