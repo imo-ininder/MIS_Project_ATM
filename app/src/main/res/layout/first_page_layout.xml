@@ -123,7 +123,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign up"
+                android:text="註冊帳號"
                 android:id="@+id/button_signup"
                 android:background="#3EBFDD"
                 android:onClick="signuup"

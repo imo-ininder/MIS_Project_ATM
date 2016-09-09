@@ -16,7 +16,6 @@ import android.os.IBinder;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 
@@ -39,7 +38,7 @@ public class RetrievePostService extends Service
     Location mCurrentLocation;
     LocationRequest mLocationRequest;
     Double mLongitude, mLatitude, distance;
-    SharedPreferences setting;
+    SharedPreferences setting,chatData;
     NotificationManager mNotificationManager;
     NotificationCompat.Builder mbuilder;
     private boolean mInProgress; // Flag that indicates if a request is underway.
@@ -64,6 +63,7 @@ public class RetrievePostService extends Service
         Toast.makeText(this, "Service is started", Toast.LENGTH_SHORT).show();
         mInProgress = false;
         setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
+        chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
         Firebase.setAndroidContext(this);
         ref = new Firebase("https://mis-atm.firebaseio.com/task");
         mNotificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -90,20 +90,20 @@ public class RetrievePostService extends Service
                     String path = dataSnapshot.getKey();
                     mLatitude = rTask.getLatitude();
                     mLongitude = rTask.getLongitude();
-                    distance =Math.max(Math.abs(mLongitude - mCurrentLocation.getLongitude()),
+                     distance =Math.max(Math.abs(mLongitude - mCurrentLocation.getLongitude()),
                                         Math.abs(mLatitude - mCurrentLocation.getLatitude()));
-                    if (distance <= fDistance) {
+                    if (distance <= fDistance && !chatData.getBoolean(CHAT_STATE,false)) {
                         Intent intent = new Intent(
                                 RetrievePostService.this,
                                 CustomDialogActivity.class
                         );
-                        intent.putExtra(DELIVER_TASK_CONTENT, rTask.getTaskContent());
-                        intent.putExtra(DELIVER_TASK_TITLE, rTask.getTaskTittle());
-                        intent.putExtra(DELIVER_TASK_ID, rTask.getId());
-                        intent.putExtra(DELIVER_TASK_PATH, path);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(DELIVER_TASK_CONTENT, rTask.getTaskContent())
+                            .putExtra(DELIVER_TASK_TITLE, rTask.getTaskTittle())
+                            .putExtra(DELIVER_TASK_ID, rTask.getId())
+                            .putExtra(DELIVER_TASK_PATH, path)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                        if(setting.getBoolean(LOGIN_NOTIFICATION, true)){
+                        if(setting.getBoolean(LOGIN_NOTIFICATION, false)){
                                 PendingIntent resultPendingIntent =
                                         PendingIntent.getActivity(RetrievePostService.this,
                                                 0,

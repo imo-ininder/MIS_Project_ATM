@@ -7,9 +7,9 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_main3">Main3Activity</string>
 
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in </string>
+    <string name="prompt_email">信箱</string>
+    <string name="prompt_password">密碼</string>
+    <string name="action_sign_in">登入</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>

@@ -32,8 +32,9 @@ public class CustomDialogActivity extends Activity implements Constant {
     @Override    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_custom_dialog);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_custom_dialog);
+
 
         Firebase.setAndroidContext(this);
 
@@ -65,35 +66,36 @@ public class CustomDialogActivity extends Activity implements Constant {
             public void onClick(View v) {
 
 
-                final Firebase targetRef = ref.child(extras.getString(DELIVER_TASK_PATH));
-                targetRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            //Inform counterpart task is accepted.
-                            targetRef.child("acceptedBy").setValue(setting.getString(LOGIN_ID,""));
+            final Firebase targetRef = ref.child(extras.getString(DELIVER_TASK_PATH));
+            targetRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        //Inform counterpart task is accepted.
+                        targetRef.child("acceptedBy").setValue(setting.getString(LOGIN_ID,""));
 
-                            //Create chat room & init Chat_SharePreference.
-                            Intent iChatRoom = new Intent(CustomDialogActivity.this,ChatroomActivity.class);
-                            chatData.edit().putString(CHAT_PATH,extras.getString(DELIVER_TASK_ID)+
-                                    setting.getString(LOGIN_ID,""))
-                                    .putString(CHAT_TITLE,extras.getString(DELIVER_TASK_TITLE))
-                                    .putBoolean(CHAT_TASK_SENDER,false)
-                                    .apply();
-                            startActivity(iChatRoom);
-                            finish();
-                        }else{
-                            Toast.makeText(CustomDialogActivity.this,
-                                    "任務已經被接走或過期囉",
-                                    Toast.LENGTH_SHORT)
-                                    .show();
-                        }
+                        //Create chat room & init Chat_SharePreference.
+                        chatData.edit().putString(CHAT_PATH,extras.getString(DELIVER_TASK_ID)+
+                                setting.getString(LOGIN_ID,""))
+                                .putString(CHAT_TITLE,extras.getString(DELIVER_TASK_TITLE))
+                                .putBoolean(CHAT_TASK_SENDER,false)
+                                .apply();
+                        startActivity(new Intent(CustomDialogActivity.this,ChatroomActivity.class));
+                        startService(new Intent(CustomDialogActivity.this,RetrieveChatDataService.class));
+                        finish();
+                    }else{
+                        Toast.makeText(CustomDialogActivity.this,
+                                "任務已經被接走或過期囉",
+                                Toast.LENGTH_SHORT)
+                                .show();
+                        finish();
                     }
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                }
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
 
-                    }
-                });
+                }
+            });
 
             }
         });

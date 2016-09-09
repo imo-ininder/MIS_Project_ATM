@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,7 +21,7 @@ import java.util.List;
 /**
  * Created by imo on 2016/8/13.
  */
-public class HistoryActivity extends AppCompatActivity implements Constant{
+public class HistoryActivity extends AppCompatActivity implements Constant {
     ListView mlv;
     ListAdapter mAdapter;
     List<String> title = new ArrayList<>();

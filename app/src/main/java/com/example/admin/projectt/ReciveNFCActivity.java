@@ -7,20 +7,15 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.Firebase;
-
-import java.util.Map;
 
 /**
  * Created by imo on 2016/8/4.
  */
 
-public class ReciveNFCActivity extends AppCompatActivity implements ChatConstant{
+public class ReciveNFCActivity extends AppCompatActivity implements ChatConstant {
     TextView NFCtestTV;
     SharedPreferences chatData;
     @Override
@@ -60,12 +55,6 @@ public class ReciveNFCActivity extends AppCompatActivity implements ChatConstant
             Firebase chatRef = new Firebase("https://mis-atm.firebaseio.com/chat")
                     .child(chatData.getString(CHAT_PATH,""));
             chatRef.child(CHAT_NFC_CHECK_MSG).setValue(CHAT_NFC_CHECK_MSG);
-            chatData.edit().putBoolean(CHAT_STATE,false).apply();
-            finish();
-
-            startActivity(new Intent(ReciveNFCActivity.this,main_page.class)
-                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-            Toast.makeText(ReciveNFCActivity.this,"任務完成",Toast.LENGTH_LONG).show();
         }
 
     }

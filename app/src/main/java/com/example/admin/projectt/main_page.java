@@ -8,19 +8,18 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.content.Intent;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.logging.Logger;
 
-public class main_page extends AppCompatActivity implements Constant{
+
+public class main_page extends AppCompatActivity implements Constant {
     Intent intent;
     SharedPreferences chatData;
-
-    SharedPreferences settler,settler2;
-    static int judgechat;
+    SharedPreferences settler;
     ImageView post,logout,history_btn,guide_btn,about_btn,setting_btn;
 
     @Override
@@ -39,37 +38,12 @@ public class main_page extends AppCompatActivity implements Constant{
         guide_btn = (ImageView) findViewById(R.id.button2);
         about_btn = (ImageView) findViewById(R.id.aboutBtn);
         setting_btn= (ImageView) findViewById(R.id.button6);
-         judgechat=0;
         chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES, 0);
 
+        checkIfIsInChatRoom();
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},1340);
-        }
-        if (chatData.getBoolean(CHAT_STATE, false)) {
-            judgechat=1;
-            settler2 = getSharedPreferences("set", 0);
-            int coloo = settler2.getInt("color",1);
-           switch(coloo) {
-               case 1:
-                post.setImageResource(R.drawable.blue_chatstatus);
-                   break;
-               case 2:
-                   post.setImageResource(R.drawable.red_chatstatus);
-                   break;
-               case 3:
-                   post.setImageResource(R.drawable.yellow_chatstatus);
-                   break;
-               case 4:
-                   post.setImageResource(R.drawable.blue_chatstatus);
-                   break;
-
-
-            }
-           /* post.setText("ChatRoom");*/
-            intent = new Intent(main_page.this, ChatroomActivity.class);
-        } else {
-            intent = new Intent(main_page.this, SendRequest.class);
         }
 
         history_btn.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +64,9 @@ public class main_page extends AppCompatActivity implements Constant{
             @Override
             public void onClick(View view) {
                 SharedPreferences setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE, 0);
-                setting.edit().putBoolean(LOGIN_STATE,false).apply();
+                setting.edit().putBoolean(LOGIN_STATE,false)
+                              .putBoolean(LOGIN_RETRIEVE_SERVICE,false)
+                              .apply();
                 Intent i = new Intent(main_page.this, first_page.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
@@ -117,18 +93,16 @@ public class main_page extends AppCompatActivity implements Constant{
         startActivity(it);
     }
 
-
-
     @Override
     public void onResume(){
         super.onResume();
-
+        checkIfIsInChatRoom();
         settler = getSharedPreferences("set", 0);
 
 
         int colo = settler.getInt("color",1);
         if(colo==1) {
-            if(judgechat==1){
+            if(chatData.getBoolean(CHAT_STATE, false)){
                 post.setImageResource(R.drawable.blue_chatstatus);
             }
             else{
@@ -143,7 +117,7 @@ public class main_page extends AppCompatActivity implements Constant{
 
         }
         else if(colo==2){
-            if(judgechat==1){
+            if(chatData.getBoolean(CHAT_STATE, false)){
                 post.setImageResource(R.drawable.red_chatstatus);
             }
              else{
@@ -157,7 +131,7 @@ public class main_page extends AppCompatActivity implements Constant{
             setting_btn.setImageResource(R.drawable.red_settings);
         }
         else if(colo==3){
-            if(judgechat==1){
+            if(chatData.getBoolean(CHAT_STATE, false)){
                 post.setImageResource(R.drawable.yellow_chatstatus);
             }
             else{
@@ -170,7 +144,7 @@ public class main_page extends AppCompatActivity implements Constant{
             setting_btn.setImageResource(R.drawable.yellow_settings);
         }
         else if(colo==4){
-            if(judgechat==1){
+            if(chatData.getBoolean(CHAT_STATE, false)){
                 post.setImageResource(R.drawable.purple_chatstatus);
             }
             else{
@@ -185,7 +159,13 @@ public class main_page extends AppCompatActivity implements Constant{
 
 
     }
-
+    private void checkIfIsInChatRoom(){
+        if (chatData.getBoolean(CHAT_STATE, false)) {
+            intent = new Intent(main_page.this, ChatroomActivity.class);
+        } else {
+            intent = new Intent(main_page.this, SendRequest.class);
+        }
+    }
 
 
 }

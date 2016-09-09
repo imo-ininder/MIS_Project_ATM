@@ -31,11 +31,9 @@ public class about_page extends AppCompatActivity {
 
     public void goback(View v){
         Intent it =new Intent(this,main_page.class);
+        it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(it);
-    }
-    public void gotomessagecenter(View v){                                  //轉去messagecenter的activity
-        Intent it =new Intent(this,messagecenter.class);
-        startActivity(it);
+        finish();
     }
 
 }

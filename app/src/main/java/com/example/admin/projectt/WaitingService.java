@@ -16,13 +16,12 @@ import com.firebase.client.FirebaseError;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 
 /**
  * Created by imo on 2016/7/15.
  */
-public class WaitingService extends Service implements ChatConstant ,Constant{
+public class WaitingService extends Service implements ChatConstant,Constant {
     IBinder mBinder = new LocalBinder();
     CountDownTimer ct;
     Firebase ref,postRef,historyRef;
@@ -89,10 +88,12 @@ public class WaitingService extends Service implements ChatConstant ,Constant{
                     Map<String, Object> state = new HashMap<String, Object>();
                     state.put("state","進行中");
                     historyRef.child(title).updateChildren(state);
-                    Intent i = new Intent(WaitingService.this, ChatroomActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
+
+                    startService(new Intent(WaitingService.this,RetrieveChatDataService.class));
+                    startActivity(new Intent(WaitingService.this,ChatroomActivity.class)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     WaitingService.this.stopSelf();
+                    ct.cancel();
                 }
             }
             @Override

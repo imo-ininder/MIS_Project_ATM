@@ -1,7 +1,10 @@
 package com.example.admin.projectt;
 
 
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 
 
@@ -13,10 +16,10 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.widget.*;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -25,62 +28,59 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ListView;
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
+
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
+
 import android.os.Build;
 import android.support.v7.app.ActionBarDrawerToggle;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ChatroomActivity extends AppCompatActivity implements ChatConstant,Constant {
 
-    Firebase ref ,chatRef,historyRef;
-    SharedPreferences chatData,setting;
+    Firebase ref, chatRef, historyRef;
+    SharedPreferences chatData, setting;
     EditText et;
     TextView tvContent;
-    Button chat,confirm,cancel;
-    String myId;
+    Button chat, confirm, cancel;
+    String myId,messageBuffer="";
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
     Toolbar toolbar;
     ActionBarDrawerToggle mDrawerToggle;
     ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[9];
-
+    Boolean running;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatroom);
         Firebase.setAndroidContext(this);
-
+        Log.d("TEST","ChatRoomOnCreateFlag");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow(); // in Activity's onCreate() for instance
             w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-
         //initialization Firebase root url & Chat SharedPreferences
-        chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
-        setting  = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
-        ref     = new Firebase("https://mis-atm.firebaseio.com/chat");
+        chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES, 0);
+        setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE, 0);
+        myId = setting.getString(LOGIN_ID,"");
+        ref = new Firebase("https://mis-atm.firebaseio.com/chat");
         historyRef = new Firebase("https://mis-atm.firebaseio.com/history")
-                .child(setting.getString(LOGIN_ID,""));
-        chatRef = ref.child(chatData.getString(CHAT_PATH,""));
-        myId  = setting.getString(LOGIN_ID,"");
+                .child(setting.getString(LOGIN_ID, ""));
+        chatRef = ref.child(chatData.getString(CHAT_PATH, ""));
+        running = true;
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver, new IntentFilter("dataFromService"));
 
         //initialization UI object
-        et      = (EditText)findViewById(R.id.chatEditText);
-        tvContent = (TextView)findViewById(R.id.chatroomContent);
-        chat      = (Button)findViewById(R.id.chatBtn);
-        confirm   = (Button)findViewById(R.id.chatConfirm);
-        cancel    = (Button)findViewById(R.id.chatCancel);
+        et = (EditText) findViewById(R.id.chatEditText);
+        tvContent = (TextView) findViewById(R.id.chatroomContent);
+        chat = (Button) findViewById(R.id.chatBtn);
+        confirm = (Button) findViewById(R.id.chatConfirm);
+        cancel = (Button) findViewById(R.id.chatCancel);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(chatData.getString(CHAT_TITLE,"ATM"));
+        toolbar.setTitle(chatData.getString(CHAT_TITLE, "ATM"));
         this.setSupportActionBar(this.toolbar);
 
         //新增側邊欄裡的選項
@@ -96,7 +96,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         //end of initialization
 
         //Change btn in main activity from "POST" to "CHAT"
-        chatData.edit().putBoolean(CHAT_STATE,true).apply();
+        chatData.edit().putBoolean(CHAT_STATE, true).apply();
 
         //Send message btn
         chat.setOnClickListener(new View.OnClickListener() {
@@ -109,9 +109,12 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         });
 
         //Don't show btn if double checked.
-        if(chatData.getBoolean(CHAT_IS_DOUBLE_CHECKED,false)){
+        if (chatData.getBoolean(CHAT_IS_DOUBLE_CHECKED, false)) {
             confirm.setVisibility(View.INVISIBLE);
             cancel.setVisibility(View.INVISIBLE);
+        } else {
+            confirm.setVisibility(View.VISIBLE);
+            cancel.setVisibility(View.VISIBLE);
         }
 
         //Double checked btn
@@ -120,7 +123,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
             public void onClick(View view) {
                 confirm.setVisibility(View.INVISIBLE);
                 cancel.setVisibility(View.INVISIBLE);
-                chatData.edit().putBoolean(CHAT_IS_DOUBLE_CHECKED,true).apply();
+                chatData.edit().putBoolean(CHAT_IS_DOUBLE_CHECKED, true).apply();
             }
         });
 
@@ -128,16 +131,8 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chatData.edit().putString(CHAT_PATH,"")
-                        .putString(CHAT_TITLE,"")
-                        .putBoolean(CHAT_STATE,false)
-                        .putBoolean(CHAT_IS_DOUBLE_CHECKED,false)
-                        .apply();
-                chatRef.child("cancel").setValue(myId);
-                Intent i = new Intent(ChatroomActivity.this,main_page.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-                finish();
+                chatRef.child(CHAT_IS_CANCELED).setValue(myId);
+                //TODO
             }
         });
 
@@ -164,90 +159,35 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-         SharedPreferences  setcolor = getSharedPreferences("set", 0);          //換顏色
-        int colorr =  setcolor.getInt("color",1);
-        switch(colorr){
-            case 1:
-
-                toolbar.setBackgroundColor(Color.parseColor("#3bb6d2"));
-
-                break;
-            case 2:
-
-                toolbar.setBackgroundColor(Color.parseColor("#eb1346"));
-
-                break;
-            case 3:
-
-                toolbar.setBackgroundColor(Color.parseColor("#fabf0c"));
-
-                break;
-            case 4:
-
-                toolbar.setBackgroundColor(Color.parseColor("#673AB7"));
-
-                break;
-
-        }
-
+        SharedPreferences color = getSharedPreferences("set", 0);          //換顏色
+        setColor(color.getInt("color", 1));
 
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
+
         super.onStart();
-        //Set up ChildEventListener to retrieve message
-        chatRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                //Check if counterpart leave chat room.
-                if (dataSnapshot.getKey().equals("cancel") ) {
-                    if(dataSnapshot.getValue().equals(myId))
-                        return;
 
-                    chatRef.removeValue();
-                    if(!dataSnapshot.getValue().toString().equals(setting.getString(LOGIN_ID,""))) {
-                        Toast.makeText(ChatroomActivity.this, "對方已經離開聊天室", Toast.LENGTH_SHORT)
-                                .show();
-                        chatData.edit().putString(CHAT_PATH,"")
-                                .putString(CHAT_TITLE,"")
-                                .putBoolean(CHAT_STATE,false)
-                                .putBoolean(CHAT_IS_DOUBLE_CHECKED,false)
-                                .apply();
-                        Map<String, Object> state = new HashMap<String, Object>();
-                        state.put("state","被取消");
-                        historyRef.child(chatData.getString(CHAT_TITLE,"ATM")).updateChildren(state);
-                        Intent i = new Intent(ChatroomActivity.this,main_page.class)
-                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
-                        finish();
-                    }
-
-                } else if(!dataSnapshot.getKey().equals(CHAT_NFC_CHECK_MSG)) {
-
-                    Message m = dataSnapshot.getValue(Message.class);
-                    tvContent.append(m.getAuthor() + ":" + m.getMessage() + "\n");
-                }
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {}
-        });
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
-        et.setText("");
+        if (!RetrieveChatDataService.getIsAvailable()) {
+            backToMainPage();
+        } else {
+            running = true;
+            tvContent.append(messageBuffer);
+            messageBuffer="";
+        }
     }
+    @Override
+    protected void onPause(){
+        running = false;
+        super.onPause();
+    }
+
 
     //判斷選了哪一個選項
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -278,7 +218,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                         .setNegativeButton("是", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                chatRef.child(CHAT_IS_CANCELED).setValue(myId);
                             }
                         }).show();
                 break;
@@ -304,15 +244,15 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
 
                 NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
                 NfcAdapter adapter = manager.getDefaultAdapter();
-                if(adapter!= null && adapter.isEnabled()){
+                if (adapter != null && adapter.isEnabled()) {
                     Intent i;
-                    if(chatData.getBoolean(CHAT_TASK_SENDER,true)){
-                        i = new Intent(ChatroomActivity.this,NFCPageActivity.class);
-                    }else {
-                        i = new Intent(ChatroomActivity.this,ReciveNFCActivity.class);
+                    if (chatData.getBoolean(CHAT_TASK_SENDER, true)) {
+                        i = new Intent(ChatroomActivity.this, NFCPageActivity.class);
+                    } else {
+                        i = new Intent(ChatroomActivity.this, ReciveNFCActivity.class);
                     }
                     startActivity(i);
-                }else{
+                } else {
                     startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
                 }
                 break;
@@ -334,4 +274,61 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         mDrawerToggle.syncState();
     }
 
+    private void setColor(int color) {
+
+        switch (color) {
+            case 1:
+
+                toolbar.setBackgroundColor(Color.parseColor("#3bb6d2"));
+
+                break;
+            case 2:
+
+                toolbar.setBackgroundColor(Color.parseColor("#eb1346"));
+
+                break;
+            case 3:
+
+                toolbar.setBackgroundColor(Color.parseColor("#fabf0c"));
+
+                break;
+            case 4:
+
+                toolbar.setBackgroundColor(Color.parseColor("#673AB7"));
+
+                break;
+
+        }
+
+    }
+
+    public void backToMainPage(){
+            Intent main = new Intent(this,main_page.class);
+            main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(main);
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("Data");
+            switch (message){
+                case CHAT_IS_CANCELED:
+                    if (running)
+                        backToMainPage();
+                    break;
+                case AUTH_SUCCESSFUL:
+                    backToMainPage();
+                    break;
+                default:
+                    if (running)
+                        tvContent.append(message);
+                    else
+                        messageBuffer += message;
+                    break;
+            }
+        }
+
+    };
 }

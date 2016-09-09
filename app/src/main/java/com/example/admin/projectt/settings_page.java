@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -22,22 +23,25 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 
-public class settings_page extends AppCompatActivity implements Constant{
+public class settings_page extends AppCompatActivity implements Constant {
     Intent serviceIntent;
-    RadioButton r1,r2;
+    RadioButton notifaction,alertDialog;
     RadioGroup mRadioGroup;
     SharedPreferences setting;
     SharedPreferences settler;
     SharedPreferences getmyhash;
     EditText  pwd_change,pwd_old;
     SharedPreferences getemail;
-    Firebase reff = new Firebase("https://mis-atm.firebaseio.com/userdata");
+    Firebase reff;
     Switch s;
+    View mNotificationTypeView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_page);
+        Firebase.setAndroidContext(this);
         setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
+        reff = new Firebase("https://mis-atm.firebaseio.com/userdata");
         settler = getSharedPreferences("set",0);
         getmyhash= getSharedPreferences("hashkey",0);
         getemail = getSharedPreferences("LoginData",0);
@@ -48,9 +52,36 @@ public class settings_page extends AppCompatActivity implements Constant{
         final LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         serviceIntent.putExtras(b);
         serviceIntent.setClass(this, RetrievePostService.class);
-        r1 =(RadioButton)findViewById(R.id.radioButton);
-        r2 =(RadioButton)findViewById(R.id.radioButton2);
+        notifaction =(RadioButton)findViewById(R.id.radioButton);
+        alertDialog =(RadioButton)findViewById(R.id.radioButton2);
+        mNotificationTypeView = findViewById(R.id.notification_types);
         s = (Switch)findViewById(R.id.switchRetrieve);
+        s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        buildAlertMessageNoGps();
+                        s.setChecked(false);
+                        return;
+                    } else {
+                        startService(serviceIntent);
+                        setting.edit().putBoolean(LOGIN_RETRIEVE_SERVICE,true).apply();
+                        notifaction.setClickable(true);
+                        alertDialog.setClickable(true);
+                    }
+                } else {
+                    stopService(serviceIntent);
+                    setting.edit().putBoolean(LOGIN_RETRIEVE_SERVICE,false).apply();
+                    notifaction.setClickable(false);
+                    alertDialog.setClickable(false);
+                }
+
+                if (mNotificationTypeView != null)
+                    mNotificationTypeView.setVisibility(b ? View.VISIBLE : View.GONE);
+            }
+        });
+        s.setChecked(false);
         mRadioGroup = (RadioGroup)findViewById(R.id.radioGroup);
 
         pwd_change=(EditText) findViewById(R.id.editText);
@@ -60,37 +91,14 @@ public class settings_page extends AppCompatActivity implements Constant{
             s.setChecked(true);
         }else{
             s.setChecked(false);
-            r1.setClickable(false);
-            r2.setClickable(false);
+            alertDialog.setClickable(false);
+            notifaction.setClickable(false);
         }
         if(setting.getBoolean(LOGIN_NOTIFICATION,false)){
-            r2.setChecked(true);
+            notifaction.setChecked(true);
         }else{
-            r1.setChecked(true);
+            alertDialog.setChecked(true);
         }
-
-        s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-                        buildAlertMessageNoGps();
-                        s.setChecked(false);
-                    }else{
-                    startService(serviceIntent);
-                    setting.edit().putBoolean(LOGIN_RETRIEVE_SERVICE,true).apply();
-                    r1.setClickable(true);
-                    r2.setClickable(true);
-                    }
-                }
-                else{
-                    stopService(serviceIntent);
-                    setting.edit().putBoolean(LOGIN_RETRIEVE_SERVICE,false).apply();
-                    r1.setClickable(false);
-                    r2.setClickable(false);
-                }
-            }
-        });
 
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -128,24 +136,28 @@ public class settings_page extends AppCompatActivity implements Constant{
         alert.show();
     }
 
-    protected void chooseblue(View v){
+    public void chooseBlue(View v){
         SharedPreferences.Editor editor=settler.edit();
         editor.putInt("color",1).apply();
+        Toast.makeText(settings_page.this,"成功更改顏色",Toast.LENGTH_SHORT).show();
     }
 
-    protected void choosered(View v){
+    public void chooseRed(View v){
         SharedPreferences.Editor editor=settler.edit();
         editor.putInt("color",2).apply();
+        Toast.makeText(settings_page.this,"成功更改顏色",Toast.LENGTH_SHORT).show();
     }
 
-    protected void chooseyellow(View v){
+    public void chooseYellow(View v){
         SharedPreferences.Editor editor=settler.edit();
         editor.putInt("color",3).apply();
+        Toast.makeText(settings_page.this,"成功更改顏色",Toast.LENGTH_SHORT).show();
     }
 
-    protected void choosepurple(View v){
+    public void choosePurple(View v){
         SharedPreferences.Editor editor=settler.edit();
         editor.putInt("color",4).apply();
+        Toast.makeText(settings_page.this,"成功更改顏色",Toast.LENGTH_SHORT).show();
     }
 
 

@@ -19,7 +19,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -29,23 +32,23 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
-import java.util.Collection;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-
+import java.util.logging.Logger;
 
 
 /**
  * Created by imo on 2016/6/29.
  */
 public class SendRequest extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks, Constant{
+        GoogleApiClient.ConnectionCallbacks, Constant {
     Location mLastLocation;
     GoogleApiClient mGoogleApiClient;
     Double mLongitude,mLatitude;
     SharedPreferences setting;
     String id;
+    LocationManager manager;
     final int PLACE_PICKER_REQUEST = 1;
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) { }
@@ -73,9 +76,10 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_news);
 
+        Logger.getAnonymousLogger().warning("clicked");
         Firebase.setAndroidContext(this);
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         final Firebase ref =new Firebase("https://mis-atm.firebaseio.com/");
+        manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
         id = setting.getString(LOGIN_ID,"");
 
@@ -96,11 +100,11 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
             @Override
             public void onClick (View v) {
                 Firebase taskRef= ref.child("task");
-                Firebase historyRef = ref.child("history").child(setting.getString(LOGIN_ID,""));
-                Firebase newPostRef = taskRef.push();
-                EditText title = (EditText)findViewById(R.id.taskTitle);
-                EditText location = (EditText)findViewById(R.id.taskLocation);
-                EditText content = (EditText)findViewById(R.id.taskContent);
+                final Firebase historyRef = ref.child("history").child(setting.getString(LOGIN_ID,""));
+                final Firebase newPostRef = taskRef.push();
+                final EditText title = (EditText)findViewById(R.id.taskTitle);
+                final EditText location = (EditText)findViewById(R.id.taskLocation);
+                final EditText content = (EditText)findViewById(R.id.taskContent);
                 //檢查有沒有未輸入的資料
                 if(TextUtils.isEmpty(title.getText())){
                     Toast.makeText(SendRequest.this, "請輸入標題",
@@ -115,42 +119,50 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Task t = new Task(title.getText().toString(),
-                        location.getText().toString(),
-                        content.getText().toString(),
-                        id,
-                        mLongitude,
-                        mLatitude) ;
-                Map<String,String> historyContent = new HashMap<String, String>();
-                historyContent.put("location",t.getTaskLocation());
-                historyContent.put("content",t.getTaskContent());
-                historyContent.put("state","等待中");
 
-                newPostRef.setValue(t);
-                historyRef.child(t.getTaskTittle()).setValue(historyContent);
-                Toast.makeText(SendRequest.this, "發送成功!", Toast.LENGTH_SHORT).show();
+                checkIfTaskIsOngoing(new CheckIfTaskIsOngoingCallBack(){
+                    @Override
+                    public void onFirebaseFinish(Boolean b){
+                        if(b){
+                            Toast.makeText(SendRequest.this,"一次只能發一個任務喔",Toast.LENGTH_SHORT).show();
+                        }else{
+                            Task t = new Task(title.getText().toString(),
+                                    location.getText().toString(),
+                                    content.getText().toString(),
+                                    id,
+                                    mLongitude,
+                                    mLatitude) ;
+                            Map<String,String> historyContent = new HashMap<String, String>();
+                            historyContent.put("location",t.getTaskLocation());
+                            historyContent.put("content",t.getTaskContent());
+                            historyContent.put("state","等待中");
 
-                //開啟Service等待回應,回到主畫面
-                Intent iMain = new Intent(SendRequest.this,main_page.class);
-                Intent iService = new Intent();
-                iService.setClass(SendRequest.this,WaitingService.class);
-                iService.putExtra(DELIVER_TASK_PATH,newPostRef.getKey());
-                iService.putExtra(DELIVER_TASK_TITLE,title.getText().toString());
+                            newPostRef.setValue(t);
+                            historyRef.child(t.getTaskTittle()).setValue(historyContent);
+                            Toast.makeText(SendRequest.this, "發送成功!", Toast.LENGTH_SHORT).show();
+
+                            //開啟Service等待回應,回到主畫面
+                            Intent iMain = new Intent(SendRequest.this,main_page.class);
+                            Intent iService = new Intent(SendRequest.this,WaitingService.class);
+
+                            iService.putExtra(DELIVER_TASK_PATH,newPostRef.getKey());
+                            iService.putExtra(DELIVER_TASK_TITLE,title.getText().toString());
 
 
-                startService(iService);
-                startActivity(iMain);
-                Log.d("Debug Path",newPostRef.getKey());
+                            startService(iService);
+                            startActivity(iMain);
+                            Log.d("Debug Path",newPostRef.getKey());
+                        }
+                    }
+                });
+
+
             }
         });
 
         btnPlacePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-                    buildAlertMessageNoGps();
-                    return;
-                }
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
                 try {
                     startActivityForResult(builder.build(SendRequest.this), PLACE_PICKER_REQUEST);
@@ -166,6 +178,9 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
 
     protected void onStart() {
         mGoogleApiClient.connect();
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            buildAlertMessageNoGps();
+        }
         super.onStart();
     }
 
@@ -188,7 +203,7 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
 
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+        builder.setMessage("GPS沒有打開喔 要開啟GPS嗎?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
@@ -198,9 +213,42 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
+                        startActivity(new Intent(SendRequest.this,main_page.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        finish();
                     }
                 });
         final AlertDialog alert = builder.create();
         alert.show();
     }
+
+    private void checkIfTaskIsOngoing(final CheckIfTaskIsOngoingCallBack c){
+        new Firebase("https://mis-atm.firebaseio.com/task")
+                .orderByChild("id")
+                .startAt(setting.getString(LOGIN_ID,""))
+                .endAt(setting.getString(LOGIN_ID,""))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            c.onFirebaseFinish(true);
+                        }
+                        else {
+                            c.onFirebaseFinish(false);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+    }
+
+    private class CheckIfTaskIsOngoingCallBack{
+        public void onFirebaseFinish(Boolean b){
+
+        }
+    }
 }
+

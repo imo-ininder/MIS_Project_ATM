@@ -11,15 +11,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.AutoCompleteTextView;
+
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
-import java.io.File;
+import java.util.logging.Logger;
 
 
-public class first_page extends AppCompatActivity implements Constant{
+public class first_page extends AppCompatActivity implements Constant {
     private UserData userData;
     private ProgressDialog pd;
     private Boolean loginFlag = false;
@@ -27,7 +29,7 @@ public class first_page extends AppCompatActivity implements Constant{
     
     SharedPreferences setting;
     Firebase ref;
-    @Override
+     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -48,7 +50,7 @@ public class first_page extends AppCompatActivity implements Constant{
             public void onClick(View view) {
                 EditText email = (EditText) findViewById(R.id.loginEmail);
                 EditText password = (EditText) findViewById(R.id.loginPassword);
-                new Checking().execute("email","password",email.getText().toString(),password.getText().toString());
+                checkLogin(email.getText().toString(),password.getText().toString());
             }
         });
     }
@@ -95,30 +97,34 @@ public class first_page extends AppCompatActivity implements Constant{
             }
         }
 
-    class Checking extends AsyncTask<String,Void,Boolean> {
-        @Override
-        protected void onPreExecute(){
-            pd = ProgressDialog.show(first_page.this,"Checking","Checking",true,false);
-            super.onPreExecute();
-        }
-        @Override
-        protected Boolean doInBackground(final String ...param){
+    public void checkLogin(final String email, final String password){
+            pd = ProgressDialog.show(first_page.this,"登入中","正再檢查資訊",true,false);
+
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                Boolean failFlag = true;
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot d:dataSnapshot.getChildren()) {
-
-                        if(!d.child(param[0]).getValue().toString().equals(param[2])){
-                            loginFlag = false;
-                        }else{
-                            if(d.child(param[1]).getValue().toString().equals(param[3])){
-                                loginFlag = true;
+                        if(d.child("email").getValue().toString().equals(email)&&
+                                d.child("password").getValue().toString().equals(password)){
+                                pd.dismiss();
+                                failFlag = false;
                                 userData = d.getValue(UserData.class);
+                                setting.edit().putString("email",userData.getEmail())
+                                        .putString("id",userData.getId())
+                                        .putString("name",userData.getName())
+                                        .putString("pwdHint",userData.getPasswordHint())
+                                        .putBoolean(LOGIN_STATE,true)
+                                        .apply();
+                                Intent i = new Intent(first_page.this,main_page.class);
+                                startActivity(i);
+                                first_page.this.finish();
                                 break;
-                            }else{
-                                loginFlag = false;
-                            }
                         }
+                    }
+                    if(failFlag){
+                        pd.dismiss();
+                        Toast.makeText(first_page.this, "登入失敗 帳號或密碼錯誤", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -127,35 +133,7 @@ public class first_page extends AppCompatActivity implements Constant{
 
                 }
             });
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return true;
         }
-        @Override
-        protected void onPostExecute(Boolean b){
-            pd.dismiss();
-            if(loginFlag){
-                setting.edit().putString("email",userData.getEmail())
-                        .putString("id",userData.getId())
-                        .putString("name",userData.getName())
-                        .putString("pwdHint",userData.getPasswordHint())
-                        .putBoolean(LOGIN_STATE,true)
-                        .apply();
-
-
-                Intent i = new Intent(first_page.this,main_page.class);
-                startActivity(i);
-                first_page.this.finish();
-            }
-            else {
-                Toast.makeText(first_page.this, "Login Fail", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
 
     public void gotottt(View v){
         Intent it =new Intent(this,main_page.class);

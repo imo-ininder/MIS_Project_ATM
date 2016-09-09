@@ -9,14 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.admin.projectt.settings_page">
 
-
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -26,20 +18,14 @@
         android:layout_alignParentStart="true"
         android:weightSum="1">
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.07"
-            android:weightSum="1">
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.09"></LinearLayout>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="設定"
+            android:id="@+id/textView3"
+            android:textSize="40sp"
+            android:textColor="#6d6969" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -64,7 +50,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.10"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:id="@+id/notification_types">
 
             <RadioGroup
                 android:layout_width="wrap_content"
@@ -113,21 +100,21 @@
                 android:focusable="false"
                 android:background="#3bb6d2"
                 android:singleLine="false"
-                android:onClick="chooseblue" />
+                android:onClick="chooseBlue" />
             <Button
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:id="@+id/button9"
                 android:focusable="false"
                 android:background="#eb1346"
-                android:onClick="choosered" />
+                android:onClick="chooseRed" />
             <Button
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:id="@+id/button10"
                 android:focusable="false"
                 android:background="#fabf0c"
-                android:onClick="chooseyellow" />
+                android:onClick="chooseYellow" />
 
             <Button
                 android:layout_width="30dp"
@@ -135,24 +122,73 @@
                 android:id="@+id/button12"
                 android:focusable="false"
                 android:background="#673AB7"
-                android:onClick="choosepurple" />
+                android:onClick="choosePurple" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="1">
 
-        </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.49"
-            android:weightSum="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="修改密碼"
+                    android:id="@+id/textView14"
+                    android:textSize="25dp"
+                    android:textColor="#666363"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_weight="2" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:ems="10"
+                    android:id="@+id/editText"
+                    android:layout_alignTop="@+id/textView14"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/button14"
+                    android:layout_weight="2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="原本密碼"
+                    android:textColor="#666363"
+                    android:id="@+id/textView19"
+                    android:layout_alignParentTop="true"
+                     android:layout_alignParentStart="true"
+                    android:layout_alignEnd="@+id/textView14"
+                    android:textSize="25dp"
+                    android:layout_weight="2" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:ems="10"
+                    android:id="@+id/editText2"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/button14"
+                    android:layout_weight="2" />
+            </LinearLayout>
 
             <Button
                 android:layout_width="100dp"
@@ -164,76 +200,9 @@
                 android:layout_below="@+id/editText"
                 android:layout_alignParentStart="true" />
 
-            <TextView
-                android:layout_width="169dp"
-                android:layout_height="200dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="修改密碼"
-                android:id="@+id/textView14"
-                android:textSize="25dp"
-                android:textColor="#666363"
-                android:layout_gravity="center_vertical"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:ems="10"
-                android:id="@+id/editText"
-                android:layout_gravity="center_vertical"
-                android:layout_alignTop="@+id/textView14"
-                android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@+id/button14" />
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="原本密碼"
-                android:textColor="#666363"
-                android:id="@+id/textView19"
-                android:layout_alignParentTop="true"
-                 android:layout_alignParentStart="true"
-                android:layout_alignEnd="@+id/textView14"
-                android:textSize="25dp" />
-
-            <EditText
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:ems="10"
-                android:id="@+id/editText2"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/button14" />
-
-        </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="設定"
-        android:id="@+id/textView3"
-        android:layout_weight="1.07"
-        android:textSize="40dp"
-        android:textColor="#6d6969"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="562dp"></LinearLayout>
 
 
 </RelativeLayout>
