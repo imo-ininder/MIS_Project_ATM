@@ -81,7 +81,6 @@ public class settings_page extends AppCompatActivity implements Constant {
                     mNotificationTypeView.setVisibility(b ? View.VISIBLE : View.GONE);
             }
         });
-        s.setChecked(false);
         mRadioGroup = (RadioGroup)findViewById(R.id.radioGroup);
 
         pwd_change=(EditText) findViewById(R.id.editText);
