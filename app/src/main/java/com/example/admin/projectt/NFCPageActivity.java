@@ -1,12 +1,15 @@
 package com.example.admin.projectt;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
@@ -17,7 +20,6 @@ import com.firebase.client.Firebase;
  */
 public class NFCPageActivity extends AppCompatActivity  implements Constant {
     NfcAdapter mNfcAdapter;
-    Button go;
     SharedPreferences setting;
     NdefMessage msg;
     SharedPreferences chatData;
@@ -42,17 +44,36 @@ public class NFCPageActivity extends AppCompatActivity  implements Constant {
                         ,CHAT_NFC_CHECK_MSG.getBytes())
         });
 
-        if (mNfcAdapter != null) {
-            Toast.makeText(this, "already set ndef message", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "adapter is null", Toast.LENGTH_LONG).show();
-        }
-
     }
 
     protected void onResume(){
         super.onResume();
         if (mNfcAdapter != null)  mNfcAdapter.setNdefPushMessage(msg,this);
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            processIntent(getIntent());
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        // onResume gets called after this to handle the intent
+        setIntent(intent);
+    }
+
+    void processIntent(Intent intent) {
+        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
+                NfcAdapter.EXTRA_NDEF_MESSAGES);
+        // only one message sent during the beam
+        NdefMessage msg = (NdefMessage) rawMsgs[0];
+        // record 0 contains the MIME type, record 1 is the AAR, if present
+
+        String textMessage = new String(msg.getRecords()[0].getPayload());
+        if(textMessage.equals(CHAT_NFC_CHECK_MSG)){
+            Firebase chatRef = new Firebase("https://mis-atm.firebaseio.com/chat")
+                    .child(chatData.getString(CHAT_PATH,""));
+            chatRef.child(CHAT_NFC_CHECK_MSG).setValue(CHAT_NFC_CHECK_MSG);
+        }
+
     }
 
 }

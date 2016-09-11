@@ -84,7 +84,7 @@ public class RetrievePostService extends Service
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChild) {
                 if(dataSnapshot !=null) {
                     Task rTask = dataSnapshot.getValue(Task.class);
-                    if (rTask.getId().equals(setting.getString(LOGIN_ID,"")))
+                    if (rTask.getId().equals(setting.getString(LOGIN_ID,"")) || mCurrentLocation == null)
                         return;
 
                     String path = dataSnapshot.getKey();

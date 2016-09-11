@@ -34,6 +34,7 @@ import com.firebase.client.Firebase;
 
 import android.os.Build;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.widget.Toast;
 
 public class ChatroomActivity extends AppCompatActivity implements ChatConstant,Constant {
 
@@ -245,13 +246,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                 NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
                 NfcAdapter adapter = manager.getDefaultAdapter();
                 if (adapter != null && adapter.isEnabled()) {
-                    Intent i;
-                    if (chatData.getBoolean(CHAT_TASK_SENDER, true)) {
-                        i = new Intent(ChatroomActivity.this, NFCPageActivity.class);
-                    } else {
-                        i = new Intent(ChatroomActivity.this, ReciveNFCActivity.class);
-                    }
-                    startActivity(i);
+                    startActivity(new Intent(ChatroomActivity.this, NFCPageActivity.class));
                 } else {
                     startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
                 }
@@ -320,6 +315,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                     break;
                 case AUTH_SUCCESSFUL:
                     backToMainPage();
+                    Toast.makeText(ChatroomActivity.this,"任務已完成",Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     if (running)

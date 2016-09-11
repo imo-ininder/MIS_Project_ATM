@@ -4,13 +4,21 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
+
+    <com.example.admin.projectt.view.SquareImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/icon_nfc"
+        android:src="@drawable/icon_nfc"
+        android:padding="@dimen/abc_action_button_min_width_material" />
+
     <TextView
-        android:layout_width="436dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="NFC TEST"
-        android:id="@+id/textView21"
-        android:layout_weight="0.23"
-        android:textSize="50pt" />
-
-
+        android:text="將手機接觸後 請輕觸畫面"
+        android:id="@+id/nfc_discription"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/button_material_dark"
+        android:textAlignment="center"
+        android:textSize="@dimen/abc_text_size_large_material" />
 </LinearLayout>

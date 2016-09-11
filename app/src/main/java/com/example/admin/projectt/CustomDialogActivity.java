@@ -78,7 +78,6 @@ public class CustomDialogActivity extends Activity implements Constant {
                         chatData.edit().putString(CHAT_PATH,extras.getString(DELIVER_TASK_ID)+
                                 setting.getString(LOGIN_ID,""))
                                 .putString(CHAT_TITLE,extras.getString(DELIVER_TASK_TITLE))
-                                .putBoolean(CHAT_TASK_SENDER,false)
                                 .apply();
                         startActivity(new Intent(CustomDialogActivity.this,ChatroomActivity.class));
                         startService(new Intent(CustomDialogActivity.this,RetrieveChatDataService.class));
