@@ -114,7 +114,6 @@ public class main_page extends AppCompatActivity implements Constant {
             guide_btn.setImageResource(R.drawable.blue_use);
             about_btn.setImageResource(R.drawable.blue_person);
             setting_btn.setImageResource(R.drawable.blue_settings);
-
         }
         else if(colo==2){
             if(chatData.getBoolean(CHAT_STATE, false)){
