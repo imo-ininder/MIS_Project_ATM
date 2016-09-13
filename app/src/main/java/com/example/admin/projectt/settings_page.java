@@ -112,11 +112,6 @@ public class settings_page extends AppCompatActivity implements Constant {
         });
 
     }
-
-
-    public void changecolor(View v) {
-        // TODO Auto-generated method stub
-    }
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")

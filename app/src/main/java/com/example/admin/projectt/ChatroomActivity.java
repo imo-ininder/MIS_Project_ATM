@@ -30,7 +30,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ListView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import android.os.Build;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -43,13 +46,14 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
     EditText et;
     TextView tvContent;
     Button chat, confirm, cancel;
-    String myId,messageBuffer="";
+    String myId;
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
     Toolbar toolbar;
     ActionBarDrawerToggle mDrawerToggle;
     ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[9];
     Boolean running;
+    View mReCheckBtns,mChatLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +85,8 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mReCheckBtns = findViewById(R.id.chatLayout2);
+        mChatLayout = findViewById(R.id.chatRelativeLayout);
         toolbar.setTitle(chatData.getString(CHAT_TITLE, "ATM"));
         this.setSupportActionBar(this.toolbar);
 
@@ -110,21 +116,17 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         });
 
         //Don't show btn if double checked.
-        if (chatData.getBoolean(CHAT_IS_DOUBLE_CHECKED, false)) {
-            confirm.setVisibility(View.INVISIBLE);
-            cancel.setVisibility(View.INVISIBLE);
-        } else {
-            confirm.setVisibility(View.VISIBLE);
-            cancel.setVisibility(View.VISIBLE);
-        }
+        if (mReCheckBtns != null)
+            mReCheckBtns.setVisibility(chatData.getBoolean(CHAT_IS_DOUBLE_CHECKED,false) ? View.GONE : View.VISIBLE);
+
 
         //Double checked btn
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                confirm.setVisibility(View.INVISIBLE);
-                cancel.setVisibility(View.INVISIBLE);
+                mReCheckBtns.setVisibility(View.GONE);
                 chatData.edit().putBoolean(CHAT_IS_DOUBLE_CHECKED, true).apply();
+                mChatLayout.invalidate();
             }
         });
 
@@ -133,7 +135,6 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
             @Override
             public void onClick(View view) {
                 chatRef.child(CHAT_IS_CANCELED).setValue(myId);
-                //TODO
             }
         });
 
@@ -178,9 +179,24 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         if (!RetrieveChatDataService.getIsAvailable()) {
             backToMainPage();
         } else {
-            running = true;
-            tvContent.append(messageBuffer);
-            messageBuffer="";
+            tvContent.setText("");
+            chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot d : dataSnapshot.getChildren()){
+                        Message m = d.getValue(Message.class);
+                        String msg = m.getAuthor() + ":" + m.getMessage() + "\n" ;
+                        tvContent.append(msg);
+                    }
+                    running = true;
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+
         }
     }
     @Override
@@ -320,8 +336,6 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                 default:
                     if (running)
                         tvContent.append(message);
-                    else
-                        messageBuffer += message;
                     break;
             }
         }
