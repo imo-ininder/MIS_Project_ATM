@@ -20,15 +20,21 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.firebase.client.ChildEventListener;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class sign_up extends AppCompatActivity {
     EditText email,password,passwordHint,passwordConfirm,name,id;
     RadioGroup radioGroup;
     SharedPreferences userkey;
-    private boolean emailFlag ,idFlag;
     private ProgressDialog pd;
     Firebase ref = new Firebase("https://mis-atm.firebaseio.com/userdata");
     Firebase refkey;
+
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@cc\\.ncu\\.edu\\.tw$", Pattern.CASE_INSENSITIVE);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,25 +42,26 @@ public class sign_up extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         userkey= getSharedPreferences("hashkey",0);
         final Button submitBtn = (Button) findViewById(R.id.submitUserData);
+        email = (EditText)findViewById(R.id.edit_email);
+        password = (EditText)findViewById(R.id.edit_pwd);
+        passwordHint = (EditText)findViewById(R.id.edit_pwd_hint);
+        passwordConfirm = (EditText)findViewById(R.id.edit_pwd_check);
+        name = (EditText)findViewById(R.id.edit_name);
+        id = (EditText)findViewById(R.id.edit_nickname);
+        radioGroup = (RadioGroup) findViewById(R.id.genderGroup);
+
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                email = (EditText)findViewById(R.id.edit_email);
-                password = (EditText)findViewById(R.id.edit_pwd);
-                passwordHint = (EditText)findViewById(R.id.edit_pwd_hint);
-                passwordConfirm = (EditText)findViewById(R.id.edit_pwd_check);
-                name = (EditText)findViewById(R.id.edit_name);
-                id = (EditText)findViewById(R.id.edit_nickname);
-                radioGroup = (RadioGroup) findViewById(R.id.genderGroup);
-                new Checking().execute("email","id",email.getText().toString(),id.getText().toString());
-
-
-
-
+                if(!validate(email.getText().toString())){
+                    Toast.makeText(sign_up.this,"請輸入正確信箱格式",Toast.LENGTH_SHORT).show();
+                }else if (!checkPassword(password.getText().toString(),passwordConfirm.getText().toString())){
+                    Toast.makeText(sign_up.this, "密碼不一致", Toast.LENGTH_SHORT).show();
+                }else {
+                    checkIfAccountExist(email.getText().toString());
+                }
             }
         });
-
-
 
     }
     @Override
@@ -67,85 +74,52 @@ public class sign_up extends AppCompatActivity {
         super.onStop();
     }
 
-    class Checking extends AsyncTask<String,Void,Boolean>{
-        @Override
-        protected void onPreExecute() {
-            pd = ProgressDialog.show(sign_up.this,"Checking","Checking",true,false);
-            super.onPreExecute();
-        }
-        @Override
-        protected Boolean doInBackground(final String... param) {
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot data: dataSnapshot.getChildren()) {
-                        if(param[2].equals(data.child(param[0]).getValue().toString())) {
-                            emailFlag = false;
-                            break;
-                        }else{
-                            emailFlag = true;
-                        }
-                        if(param[3].equals(data.child(param[1]).getValue().toString())){
-                            idFlag = false;
-                            break;
-                        }else{
-                            idFlag = true;
-                        }
-                    }
+
+    public void checkIfAccountExist(final String email){
+        pd = ProgressDialog.show(this,"檢查中","正再檢查資訊",true,false);
+        ref.orderByChild("email")
+                .startAt(email)
+                .endAt(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    pd.dismiss();
+                    Toast.makeText(sign_up.this, "信箱已經有人註冊", Toast.LENGTH_SHORT).show();
+                }else{
+                    pd.dismiss();
+                    int checkedId = radioGroup.getCheckedRadioButtonId();
+                    RadioButton r = (RadioButton) findViewById(checkedId);
+                    UserData userData = new UserData(email
+                            ,password.getText().toString()
+                            ,passwordHint.getText().toString()
+                            ,name.getText().toString()
+                            ,id.getText().toString()
+                            ,r.getText().toString());
+
+                    refkey= ref.push();
+                    refkey.setValue(userData);
+                    Toast.makeText(sign_up.this, "註冊成功", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(sign_up.this,first_page.class);
+                    i.putExtra("email",email);
+                    i.putExtra("password",password.getText().toString());
+                    startActivity(i);
                 }
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-
-
-
-
-
-        @Override
-        protected void onPostExecute(Boolean b) {
-            super.onPostExecute(b);
-            pd.dismiss();
-            if (!emailFlag) {
-                Toast.makeText(sign_up.this, "信箱已經有人註冊", Toast.LENGTH_SHORT).show();
-            } else if (!idFlag) {
-                Toast.makeText(sign_up.this, "暱稱已經有人使用", Toast.LENGTH_SHORT).show();
-            }else if(!password.getText().toString().equals(passwordConfirm.getText().toString())){
-                Toast.makeText(sign_up.this, "密碼不一致", Toast.LENGTH_SHORT).show();
-            }else if(emailFlag && idFlag){
-                int checkedId = radioGroup.getCheckedRadioButtonId();
-                RadioButton r = (RadioButton) findViewById(checkedId);
-                UserData userData = new UserData(email.getText().toString()
-                        ,password.getText().toString()
-                        ,passwordHint.getText().toString()
-                        ,name.getText().toString()
-                        ,id.getText().toString()
-                        ,r.getText().toString());
-
-
-
-                         refkey= ref.push();
-
-                         refkey.setValue(userData);
-
-
-                Toast.makeText(sign_up.this, "註冊成功", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(sign_up.this,first_page.class);
-                i.putExtra("email",email.getText().toString());
-                i.putExtra("password",password.getText().toString());
-                startActivity(i);
             }
 
-        }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
     }
 
+    public static boolean validate(String emailStr) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(emailStr);
+        return matcher.find();
+    }
 
+    public boolean checkPassword(String pwd1,String pwdRecheck){
+        return pwd1.equals(pwdRecheck);
+    }
 }

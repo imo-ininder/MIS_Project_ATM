@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1"
-    tools:context=".main_page">
+    tools:context=".main_page"
+    android:gravity="center_vertical">
 
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:layout_alignParentTop="false"
+        android:id="@+id/main_linerLayout">
 
         <TextView
             android:id="@+id/textView7"
@@ -25,39 +26,41 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#6f6b6b"
             android:textSize="35dp" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView16"
+            android:src="@drawable/bar_img"
+            android:scaleType="fitXY"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/linearLayout3"
+            android:layout_weight="0.45"
+            android:gravity="center_horizontal"
+            android:maxWidth="20dp"
+            android:text="A TOOL MAN"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#888282"
+            android:textSize="27dp"
+            android:textStyle="bold|italic" />
+
     </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="100dp"
-        android:layout_height="75dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/linearLayout3"
-        android:layout_weight="0.45"
-        android:gravity="center_horizontal"
-        android:maxWidth="20dp"
-        android:text="A TOOL MAN"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#888282"
-        android:textSize="27dp"
-        android:textStyle="bold|italic" />
-
-    <android.support.percent.PercentRelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView8"
-        android:orientation="horizontal">
 
         <android.support.percent.PercentRelativeLayout
             android:id="@+id/topPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="bottom|center_horizontal"
-            app:layout_heightPercent="66%"
-            app:layout_widthPercent="100%">
+            android:foregroundGravity="right"
+            android:gravity="center">
 
             <com.example.admin.projectt.view.SquareImageView
                 android:id="@+id/postBtm"
@@ -69,8 +72,7 @@
                 android:text="Post"
                 app:layout_heightPercent="100%"
                 app:layout_widthPercent="66%"
-                android:layout_alignParentTop="true"
-                android:foregroundGravity="clip_vertical" />
+                android:layout_alignParentTop="true" />
 
             <android.support.percent.PercentRelativeLayout
                 android:layout_width="0dp"
@@ -105,13 +107,10 @@
         </android.support.percent.PercentRelativeLayout>
 
         <android.support.percent.PercentRelativeLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_widthPercent="100%"
-            app:layout_heightPercent="33%"
-            android:layout_below="@+id/topPanel"
-            android:gravity="center_horizontal|top"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <com.example.admin.projectt.view.SquareImageView
                 android:id="@+id/button6"
@@ -151,7 +150,4 @@
 
         </android.support.percent.PercentRelativeLayout>
 
-    </android.support.percent.PercentRelativeLayout>
-
-
-</RelativeLayout>
+</LinearLayout>

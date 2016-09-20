@@ -12,30 +12,116 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="match_parent"
         android:id="@+id/post_layout"
         android:weightSum="1"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="發布任務"
+            android:id="@+id/textView7"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="35dp"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView17"
+            android:src="@drawable/bar2_img" />
+
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="53dp"
-            android:id="@+id/N"
-            android:layout_weight="0.07">
+            android:layout_height="fill_parent"
+            android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
+            android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:id="@+id/N"
+                android:layout_weight="0.07"
+                android:gravity="bottom">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="任務名稱"
+                    android:id="@+id/textView5" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/taskTitle"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:id="@+id/L"
+                android:layout_weight="0.01"
+                android:gravity="bottom">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/missionlocation"
+                    android:id="@+id/textView2" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/taskLocation"
+                    android:layout_weight="1" />
+
+             <ImageView
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/gps1"
+                    android:id="@+id/btnPlacePicker" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="任務名稱"
-                android:id="@+id/textView5" />
+                android:text="@string/describe"
+                android:id="@+id/textView4" />
 
             <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/taskContent"
+                android:layout_weight="0.70" />
+
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/taskTitle"
-                android:layout_weight="1" />
+                android:text="@string/OUTPUT"
+                android:id="@+id/btn_submit_task"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView18"
+                android:src="@drawable/bar2_img" />
         </LinearLayout>
 
         <!--<RadioButton-->
@@ -73,69 +159,7 @@
                 <!--android:id="@+id/missiontime" />-->
         <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="53dp"
-            android:id="@+id/L"
-            android:layout_weight="0.01">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/missionlocation"
-                android:id="@+id/textView2" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/taskLocation"
-                android:layout_weight="1" />
-
-         <ImageView
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/gps1"
-                android:id="@+id/btnPlacePicker" />
-        </LinearLayout>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/describe"
-            android:id="@+id/textView4" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:inputType="textMultiLine"
-            android:ems="10"
-            android:id="@+id/taskContent"
-            android:layout_weight="0.70" />
 
     </LinearLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/OUTPUT"
-        android:id="@+id/btn_submit_task"
-        android:layout_gravity="center_horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="發布任務"
-        android:id="@+id/textView7"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="35dp" />
 
 </RelativeLayout>
