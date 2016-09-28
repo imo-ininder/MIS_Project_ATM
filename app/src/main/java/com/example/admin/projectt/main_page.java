@@ -27,7 +27,6 @@ public class main_page extends AppCompatActivity implements Constant {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
 
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
