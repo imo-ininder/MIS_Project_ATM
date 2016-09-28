@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="236dp"
@@ -15,9 +16,10 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/linearLayout3" />
-
-    <ListView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/history_container"
         android:layout_width="match_parent"
-        android:layout_height="394dp"
-        android:id="@+id/lvHistory" />
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 </LinearLayout>

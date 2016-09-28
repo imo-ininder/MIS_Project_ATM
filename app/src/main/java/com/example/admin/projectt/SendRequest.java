@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.admin.projectt.view.History;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -33,6 +35,8 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -100,7 +104,7 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
             @Override
             public void onClick (View v) {
                 Firebase taskRef= ref.child("task");
-                final Firebase historyRef = ref.child("history").child(setting.getString(LOGIN_ID,""));
+                final Firebase historyRef = ref.child("history").child(setting.getString(LOGIN_ID,"")).push();
                 final Firebase newPostRef = taskRef.push();
                 final EditText title = (EditText)findViewById(R.id.taskTitle);
                 final EditText location = (EditText)findViewById(R.id.taskLocation);
@@ -126,19 +130,21 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
                         if(b){
                             Toast.makeText(SendRequest.this,"一次只能發一個任務喔",Toast.LENGTH_SHORT).show();
                         }else{
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                            //get current date time with Date()
+                            Date date = new Date();
                             Task t = new Task(title.getText().toString(),
                                     location.getText().toString(),
                                     content.getText().toString(),
                                     id,
                                     mLongitude,
                                     mLatitude) ;
-                            Map<String,String> historyContent = new HashMap<String, String>();
-                            historyContent.put("location",t.getTaskLocation());
-                            historyContent.put("content",t.getTaskContent());
-                            historyContent.put("state","等待中");
-
+                            History h = new History(title.getText().toString(),
+                                    content.getText().toString(),
+                                    "等待中",
+                                    dateFormat.format(date));
                             newPostRef.setValue(t);
-                            historyRef.child(t.getTaskTittle()).setValue(historyContent);
+                            historyRef.setValue(h);
                             Toast.makeText(SendRequest.this, "發送成功!", Toast.LENGTH_SHORT).show();
 
                             //開啟Service等待回應,回到主畫面
@@ -146,6 +152,7 @@ public class SendRequest extends FragmentActivity implements GoogleApiClient.OnC
                             Intent iService = new Intent(SendRequest.this,WaitingService.class);
 
                             iService.putExtra(DELIVER_TASK_PATH,newPostRef.getKey());
+                            iService.putExtra(DELIVER_HISTORY_PATH,historyRef.getKey());
                             iService.putExtra(DELIVER_TASK_TITLE,title.getText().toString());
 
 

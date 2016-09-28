@@ -85,10 +85,6 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".HistoryDeatialActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ChatroomActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"

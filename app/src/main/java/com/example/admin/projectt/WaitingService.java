@@ -25,7 +25,7 @@ public class WaitingService extends Service implements ChatConstant,Constant {
     IBinder mBinder = new LocalBinder();
     CountDownTimer ct;
     Firebase ref,postRef,historyRef;
-    String title;
+    String historyPath,title;
     SharedPreferences setting,chatData;
     public class LocalBinder extends Binder {
         public WaitingService getServerInstance() {
@@ -59,8 +59,8 @@ public class WaitingService extends Service implements ChatConstant,Constant {
             public void onFinish() {
                 postRef.removeValue();
                 Map<String, Object> state = new HashMap<String, Object>();
-                state.put("state","沒人回應");
-                historyRef.child(title).updateChildren(state);
+                state.put("taskStatus","沒人回應");
+                historyRef.child(historyPath).updateChildren(state);
                 Toast.makeText(WaitingService.this,"任務已過時效",Toast.LENGTH_SHORT).show();
                 WaitingService.this.stopSelf();
             }
@@ -71,9 +71,9 @@ public class WaitingService extends Service implements ChatConstant,Constant {
         super.onStartCommand(intent, flags, startId);
         //拿到自己任務的Firebase路徑
         postRef = ref.child(intent.getStringExtra(DELIVER_TASK_PATH));
+        historyPath = intent.getStringExtra(DELIVER_HISTORY_PATH);
         title = intent.getStringExtra(DELIVER_TASK_TITLE);
         Log.d("pathDebug",intent.getStringExtra(DELIVER_TASK_PATH));
-        Log.d("Title",title);
 
         postRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -85,8 +85,8 @@ public class WaitingService extends Service implements ChatConstant,Constant {
                             .apply();
                     postRef.removeValue();
                     Map<String, Object> state = new HashMap<String, Object>();
-                    state.put("state","進行中");
-                    historyRef.child(title).updateChildren(state);
+                    state.put("taskStatus","進行中");
+                    historyRef.child(historyPath).updateChildren(state);
 
                     startService(new Intent(WaitingService.this,RetrieveChatDataService.class));
                     startActivity(new Intent(WaitingService.this,ChatroomActivity.class)

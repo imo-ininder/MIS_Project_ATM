@@ -18,10 +18,14 @@ import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.widget.*;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -30,6 +34,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ListView;
 
+import com.example.admin.projectt.adapter.MessageAdapter;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -39,12 +44,13 @@ import android.os.Build;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 public class ChatroomActivity extends AppCompatActivity implements ChatConstant,Constant {
 
     Firebase ref, chatRef, historyRef;
     SharedPreferences chatData, setting;
     EditText et;
-    TextView tvContent;
     Button chat, confirm, cancel;
     String myId;
     DrawerLayout mDrawerLayout;
@@ -54,6 +60,8 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
     ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[9];
     Boolean running;
     View mReCheckBtns,mChatLayout;
+    RecyclerView mMessageContainer;
+    MessageAdapter mMessageHolderAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +86,6 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
 
         //initialization UI object
         et = (EditText) findViewById(R.id.chatEditText);
-        tvContent = (TextView) findViewById(R.id.chatroomContent);
         chat = (Button) findViewById(R.id.chatBtn);
         confirm = (Button) findViewById(R.id.chatConfirm);
         cancel = (Button) findViewById(R.id.chatCancel);
@@ -89,6 +96,10 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         mChatLayout = findViewById(R.id.chatRelativeLayout);
         toolbar.setTitle(chatData.getString(CHAT_TITLE, "ATM"));
         this.setSupportActionBar(this.toolbar);
+        mMessageContainer = (RecyclerView) findViewById(R.id.message_container);
+        mMessageHolderAdapter = new MessageAdapter(myId);
+        mMessageContainer.setAdapter(mMessageHolderAdapter);
+        mMessageContainer.setLayoutManager(new LinearLayoutManager(this));
 
         //新增側邊欄裡的選項
         drawerItem[0] = new ObjectDrawerItem("");
@@ -179,14 +190,13 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         if (!RetrieveChatDataService.getIsAvailable()) {
             backToMainPage();
         } else {
-            tvContent.setText("");
+            mMessageHolderAdapter.clearMessage();
             chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot d : dataSnapshot.getChildren()){
                         Message m = d.getValue(Message.class);
-                        String msg = m.getAuthor() + ":" + m.getMessage() + "\n" ;
-                        tvContent.append(msg);
+                        mMessageHolderAdapter.addMessage(m);
                     }
                     running = true;
                 }
@@ -253,7 +263,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                         .setNegativeButton("是", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                chatRef.child("協議取消").setValue(myId);
                             }
                         }).show();
                 break;
@@ -333,9 +343,12 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                     backToMainPage();
                     Toast.makeText(ChatroomActivity.this,"任務已完成",Toast.LENGTH_SHORT).show();
                     break;
-                default:
-                    if (running)
-                        tvContent.append(message);
+                case CHAT_RECEIVED:
+                    if (running) {
+                        final String[] extras = intent.getStringArrayExtra("Extras");
+                        final Message m = new Message(extras[0], extras[1]);
+                        mMessageHolderAdapter.addMessage(m);
+                    }
                     break;
             }
         }

@@ -70,17 +70,12 @@
         android:layout_alignWithParentIfMissing="false"
         android:layout_alignParentRight="false">
 
-        <ScrollView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/message_container"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:fillViewport="false">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/chatroomContent"
-                android:layout_gravity="center_horizontal|top" />
-        </ScrollView>
+            android:layout_height="fill_parent">
+
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
     <LinearLayout

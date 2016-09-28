@@ -12,4 +12,5 @@ public interface ChatConstant {
     String CHAT_NFC_CHECK_MSG="isCompleted";
     String CHAT_IS_CANCELED="cancel";
     String AUTH_SUCCESSFUL="success";
+    String CHAT_RECEIVED="com.example.admin.projectt.CHAT_RECEIVED";
 }

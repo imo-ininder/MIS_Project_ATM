@@ -7,7 +7,8 @@
     android:orientation="vertical"
     android:weightSum="1"
     tools:context=".main_page"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:fitsSystemWindows="true">
 
 
     <LinearLayout

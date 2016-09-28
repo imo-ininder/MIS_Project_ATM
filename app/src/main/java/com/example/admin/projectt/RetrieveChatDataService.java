@@ -22,7 +22,7 @@ public class RetrieveChatDataService extends Service implements ChatConstant {
     NotificationCompat.Builder mbuilder;
     ChildEventListener chatListener;
     private static boolean sIsAvailable = false;
-
+    private static int admitCancelCounter = 0;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -55,17 +55,25 @@ public class RetrieveChatDataService extends Service implements ChatConstant {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 if (dataSnapshot.getKey().equals(CHAT_IS_CANCELED) ) {
-                    ifIsCanceled();
+                    ifIsCanceled("任務被取消了 QQ");
                 } else if(dataSnapshot.getKey().equals(CHAT_NFC_CHECK_MSG)) {
                     authNFC();
-                } else {
+                } else if(dataSnapshot.getKey().equals("協議取消")) {
+                    admitCancelCounter++;
+                    admitCancel();
+                }
+                else {
                     Message m = dataSnapshot.getValue(Message.class);
-                    String msg = m.getAuthor() + ":" + m.getMessage() + "\n" ;
-                    sendMessageToActivity(msg);
+                    sendMessageToActivity(CHAT_RECEIVED, m.getAuthor(), m.getMessage());
                 }
             }
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                admitCancelCounter++;
+                if(admitCancelCounter==2) {
+                    ifIsCanceled("協議取消成功 可以開始新的任務了");
+                }
+            }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {}
@@ -82,12 +90,12 @@ public class RetrieveChatDataService extends Service implements ChatConstant {
 
     }
 
-    public void ifIsCanceled() {
+    public void ifIsCanceled(String msg) {
 
         setIsAvailable(false);
         sendMessageToActivity(CHAT_IS_CANCELED);
         resetChatData();
-        buildNotification();
+        buildNotification(msg);
         chatRef.removeEventListener(chatListener);
         RetrieveChatDataService.this.stopSelf();
 
@@ -103,15 +111,21 @@ public class RetrieveChatDataService extends Service implements ChatConstant {
     }
 
     public void sendMessageToActivity(String msg){
-
         Intent intent = new Intent("dataFromService");
         intent.putExtra("Data",msg);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
 
+    public void sendMessageToActivity(String msg, String... extras){
+        Intent intent = new Intent("dataFromService");
+        intent.putExtra("Data", msg);
+        intent.putExtra("Extras", extras);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     public void resetChatData() {
 
+        admitCancelCounter = 0;
         chatRef.removeValue();
         chatData.edit().putString(CHAT_PATH, "")
                 .putString(CHAT_TITLE, "")
@@ -121,15 +135,21 @@ public class RetrieveChatDataService extends Service implements ChatConstant {
 
     }
 
-    public void buildNotification(){
+    public void buildNotification(String msg){
 
         mNotificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mbuilder = new NotificationCompat.Builder(this)
                 .setContentTitle("ATM")
-                .setContentText("任務被取消了 QAQ")
+                .setContentText(msg)
                 .setSmallIcon(R.drawable.atm);
         mNotificationManager.notify(1,mbuilder.build());
 
+    }
+
+    private void admitCancel(){
+        Intent intent = new Intent("dataFromService");
+        intent.putExtra("Data","對方提出協議取消");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     static private void setIsAvailable(final boolean value) {
