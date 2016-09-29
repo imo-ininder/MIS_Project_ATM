@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".first_page"
+    tools:context="com.attmm.admin.projectt.first_page"
     android:onClick="gotottt">
 
     <android.support.design.widget.AppBarLayout

@@ -6,7 +6,7 @@
     android:layout_height="fill_parent"
     android:transitionGroup="false"
     android:nestedScrollingEnabled="false"
-    tools:context="com.example.admin.projectt.first_page"
+    tools:context="com.attmm.admin.projectt.first_page"
     android:id="@+id/dialogBackground"
     android:gravity="center_vertical|center_horizontal">
     <LinearLayout

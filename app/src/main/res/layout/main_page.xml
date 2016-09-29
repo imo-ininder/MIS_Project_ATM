@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1"
-    tools:context=".main_page"
+    tools:context="com.attmm.admin.projectt.main_page"
     android:gravity="center_vertical"
     android:fitsSystemWindows="true">
 
@@ -63,7 +63,7 @@
             android:foregroundGravity="right"
             android:gravity="center">
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:id="@+id/postBtm"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -82,7 +82,7 @@
                 app:layout_widthPercent="33%"
                 android:orientation="vertical">
 
-                <com.example.admin.projectt.view.SquareImageView
+                <com.attmm.admin.projectt.view.SquareImageView
                     android:id="@+id/button3"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -92,7 +92,7 @@
                     android:padding="2dp"
                     app:layout_widthPercent="100%"
                     app:layout_heightPercent="50%" />
-                <com.example.admin.projectt.view.SquareImageView
+                <com.attmm.admin.projectt.view.SquareImageView
                     android:id="@+id/button2"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -113,7 +113,7 @@
             android:orientation="horizontal"
             android:gravity="center">
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:id="@+id/button6"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -124,7 +124,7 @@
                 app:layout_heightPercent="100%"
                 app:layout_widthPercent="33%" />
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:layout_toRightOf="@id/button6"
                 android:id="@+id/aboutBtn"
                 android:layout_width="0dp"
@@ -137,7 +137,7 @@
                 app:layout_widthPercent="33%" />
 
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:id="@+id/btnLogout"
                 android:layout_toRightOf="@id/aboutBtn"
                 android:layout_width="0dp"

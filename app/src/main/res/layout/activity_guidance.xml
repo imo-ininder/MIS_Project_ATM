@@ -9,9 +9,9 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:gravity="center_vertical"
-    tools:context="com.example.admin.projectt.guidance">
+    tools:context="com.attmm.admin.projectt.guidance">
 
-    <com.example.admin.projectt.view.SquareFrameLayout
+    <com.attmm.admin.projectt.view.SquareFrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -26,7 +26,7 @@
                 app:layout_widthPercent="14%"
                 app:layout_heightPercent="10%"/>
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:id="@+id/imageView3"
@@ -39,7 +39,7 @@
                 app:layout_heightPercent="100%"
                 android:onClick="gotoruleteach" />
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_widthPercent="56%"
@@ -57,7 +57,7 @@
                 app:layout_widthPercent="36%"
                 app:layout_heightPercent="1%"/>
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_toRightOf="@+id/blank2"
@@ -74,7 +74,7 @@
                 app:layout_widthPercent="49%"
                 app:layout_heightPercent="1%"/>
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_widthPercent="26%"
@@ -88,7 +88,7 @@
                 android:onClick="gotocancelteach"
                 android:nestedScrollingEnabled="false" />
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_widthPercent="26%"
@@ -107,7 +107,7 @@
                 app:layout_widthPercent="75%"
                 app:layout_heightPercent="1%"/>
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_widthPercent="22%"
@@ -124,7 +124,7 @@
                 app:layout_widthPercent="70%"
                 app:layout_heightPercent="20%"/>
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_widthPercent="26%"
@@ -136,7 +136,7 @@
                 android:src="@drawable/blue_giveup"
                 android:onClick="gotogiveupteach" />
 
-            <com.example.admin.projectt.view.SquareImageView
+            <com.attmm.admin.projectt.view.SquareImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_widthPercent="26%"
@@ -150,6 +150,6 @@
 
         </android.support.percent.PercentRelativeLayout>
 
-    </com.example.admin.projectt.view.SquareFrameLayout>
+    </com.attmm.admin.projectt.view.SquareFrameLayout>
 
 </RelativeLayout>
