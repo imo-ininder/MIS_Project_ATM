@@ -14,14 +14,13 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
 
-public class RetrieveChatDataService extends Service implements ChatConstant {
+public class RetrieveChatDataService extends Service implements Constant {
     Firebase chatRef;
-    SharedPreferences chatData;
+    SharedPreferences chatData,setting;
     NotificationManager mNotificationManager;
     NotificationCompat.Builder mbuilder;
     ChildEventListener chatListener;
-    private static boolean sIsAvailable = false;
-    private static int admitCancelCounter = 0;
+    private static boolean sIsAvailable = false,sAdmitCancel=false;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -32,16 +31,18 @@ public class RetrieveChatDataService extends Service implements ChatConstant {
         super.onCreate();
         Firebase.setAndroidContext(this);
 
+        setting = getSharedPreferences(LOGIN_SHAREDPREFERENCE,0);
         chatData = getSharedPreferences(CHAT_SHAREDPREFERENCES,0);
         chatRef = new Firebase("https://mis-atm.firebaseio.com/chat/"
                 +chatData.getString(CHAT_PATH,""));
         setIsAvailable(true);
+        setsAdmitCancel(false);
     }
 
     @Override
     public void onDestroy() {
         setIsAvailable(false);
-
+        setsAdmitCancel(false);
         super.onDestroy();
     }
 
@@ -57,21 +58,20 @@ public class RetrieveChatDataService extends Service implements ChatConstant {
                     ifIsCanceled("任務被取消了 QQ");
                 } else if(dataSnapshot.getKey().equals(CHAT_NFC_CHECK_MSG)) {
                     authNFC();
-                } else if(dataSnapshot.getKey().equals("協議取消")) {
-                    admitCancelCounter++;
-                    admitCancel();
-                }
-                else {
+                } else if(dataSnapshot.getKey().equals(CHAT_IS_ADMIT_CANCELED)) {
+                    ifIsCanceled("協議取消成功 可以開始新的任務了!");
+                } else {
                     Message m = dataSnapshot.getValue(Message.class);
-                    sendMessageToActivity(CHAT_RECEIVED, m.getAuthor(), m.getMessage());
+                    if(m.getAction().equals("協議取消")){
+                        if(!m.getAuthor().equals(setting.getString(LOGIN_ID,"")))
+                        admitCancel();
+                    }else {
+                        sendMessageToActivity(CHAT_RECEIVED, m.getAuthor(), m.getMessage(),m.getAction());
+                    }
                 }
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                admitCancelCounter++;
-                if(admitCancelCounter==2) {
-                    ifIsCanceled("協議取消成功 可以開始新的任務了");
-                }
             }
 
             @Override
@@ -124,7 +124,6 @@ public class RetrieveChatDataService extends Service implements ChatConstant {
 
     public void resetChatData() {
 
-        admitCancelCounter = 0;
         chatRef.removeValue();
         chatData.edit().putString(CHAT_PATH, "")
                 .putString(CHAT_TITLE, "")
@@ -146,6 +145,8 @@ public class RetrieveChatDataService extends Service implements ChatConstant {
     }
 
     private void admitCancel(){
+
+        sAdmitCancel =true;
         Intent intent = new Intent("dataFromService");
         intent.putExtra("Data","對方提出協議取消");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -157,5 +158,11 @@ public class RetrieveChatDataService extends Service implements ChatConstant {
 
     static public boolean getIsAvailable() {
         return sIsAvailable;
+    }
+
+    static private void setsAdmitCancel(final boolean value){ sAdmitCancel = value; }
+
+    static public boolean getIsAdmitCancel() {
+        return sAdmitCancel;
     }
 }

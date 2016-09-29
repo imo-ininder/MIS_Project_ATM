@@ -114,7 +114,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Message m = new Message(myId,et.getText().toString());
+                Message m = new Message(myId,et.getText().toString(),"");
                 chatRef.push().setValue(m);
                 et.setText("");
             }
@@ -190,7 +190,8 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot d : dataSnapshot.getChildren()){
                         Message m = d.getValue(Message.class);
-                        mMessageHolderAdapter.addMessage(m);
+                        if(m.getAction().equals(""))
+                            mMessageHolderAdapter.addMessage(m);
                     }
                     running = true;
                 }
@@ -248,16 +249,22 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                         .setTitle("ATM系統訊息")
                         .setCancelable(false)
                         .setMessage("提出協議取消嗎?")
-                        .setPositiveButton("否", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if(RetrieveChatDataService.getIsAdmitCancel()){
+                                    chatRef.child(CHAT_IS_ADMIT_CANCELED).setValue(myId);
+                                }else {
+                                    Message m = new Message(myId,"","協議取消");
+                                    chatRef.push().setValue(m);
+                                    et.setText("");
+                                }
+                            }
+                        })
+                        .setNegativeButton("否", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
-                            }
-                        })
-                        .setNegativeButton("是", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                chatRef.child("協議取消").setValue(myId);
                             }
                         }).show();
                 break;
@@ -340,7 +347,7 @@ public class ChatroomActivity extends AppCompatActivity implements ChatConstant,
                 case CHAT_RECEIVED:
                     if (running) {
                         final String[] extras = intent.getStringArrayExtra("Extras");
-                        final Message m = new Message(extras[0], extras[1]);
+                        final Message m = new Message(extras[0], extras[1],extras[2]);
                         mMessageHolderAdapter.addMessage(m);
                     }
                     break;

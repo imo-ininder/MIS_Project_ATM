@@ -13,4 +13,5 @@ public interface ChatConstant {
     String CHAT_IS_CANCELED="cancel";
     String AUTH_SUCCESSFUL="success";
     String CHAT_RECEIVED="com.example.admin.projectt.CHAT_RECEIVED";
+    String CHAT_IS_ADMIT_CANCELED="comexampleadminprojecttCHAT_ADMIT_CANCEL";
 }
