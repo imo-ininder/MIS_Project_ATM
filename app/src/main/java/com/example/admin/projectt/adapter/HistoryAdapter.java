@@ -1,5 +1,6 @@
 package com.example.admin.projectt.adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,9 @@ import com.example.admin.projectt.Message;
 import com.example.admin.projectt.R;
 import com.example.admin.projectt.view.History;
 
+import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
+import net.steamcrafted.materialiconlib.MaterialIconView;
+
 import java.util.ArrayList;
 
 /**
@@ -18,8 +22,10 @@ import java.util.ArrayList;
  */
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemHistoryHolder> {
     ArrayList<History> mItems = new ArrayList<>();
-
-    public HistoryAdapter(){}
+    int color;
+    public HistoryAdapter(int color){
+        this.color = color;
+    }
     @Override
     public ItemHistoryHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
@@ -32,9 +38,27 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemHist
     public void onBindViewHolder(ItemHistoryHolder holder, int position) {
         final History h = mItems.get(position);
         holder.title.setText(h.getTaskTitle());
-        holder.historyContent.setText("內容: " + h.getTaskContent());
-        holder.status.setText("狀態: " + h.getTaskStatus());
+        holder.title.setBackgroundColor(color);
+        holder.historyContent.setText(h.getTaskContent());
+        holder.status.setText(h.getTaskStatus());
         holder.date.setText(h.getTaskDate());
+
+        if ("等待中".equals(h.getTaskStatus())) {
+            holder.icon.setIcon(MaterialDrawableBuilder.IconValue.CHECKBOX_MULTIPLE_BLANK_CIRCLE);
+            holder.icon.setColor(Color.rgb(255, 87, 34));
+        } else if ("進行中".equals(h.getTaskStatus())) {
+            holder.icon.setIcon(MaterialDrawableBuilder.IconValue.PLAY_CIRCLE);
+            holder.icon.setColor(Color.rgb(75, 174, 78));
+        } else if ("沒人回應".equals(h.getTaskStatus())) {
+            holder.icon.setIcon(MaterialDrawableBuilder.IconValue.MINUS_CIRCLE);
+            holder.icon.setColor(Color.rgb(254, 192, 5));
+        } else if ("取消".equals(h.getTaskStatus())) {
+            holder.icon.setIcon(MaterialDrawableBuilder.IconValue.CLOSE_CIRCLE);
+            holder.icon.setColor(Color.rgb(243, 66, 53));
+        } else if ("完成".equals(h.getTaskStatus())) {
+            holder.icon.setIcon(MaterialDrawableBuilder.IconValue.CHECKBOX_MARKED_CIRCLE);
+            holder.icon.setColor(Color.rgb(75, 174, 78));
+        }
     }
 
     @Override
@@ -59,6 +83,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemHist
         TextView historyContent;
         TextView status;
         TextView date;
+        MaterialIconView icon;
 
         public ItemHistoryHolder(View itemView) {
             super(itemView);
@@ -66,6 +91,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemHist
             historyContent = (TextView) itemView.findViewById(R.id.history_content);
             status = (TextView) itemView.findViewById(R.id.history_status);
             date = (TextView) itemView.findViewById(R.id.history_date);
+            icon = (MaterialIconView) itemView.findViewById(R.id.icon);
         }
     }
 }
