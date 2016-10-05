@@ -56,8 +56,9 @@ public class CustomDialogActivity extends Activity implements Constant {
 
         //get task information
         if(extras!= null){
-            text_title.setText(extras.get(DELIVER_TASK_TITLE).toString());
-            text_content.setText(extras.get(DELIVER_TASK_CONTENT).toString());
+            text_title.setText("A Tool Man");
+            text_content.setText("Hi~ 可以請你"+extras.get(DELIVER_TASK_TITLE).toString());
+            //extras.get(DELIVER_TASK_CONTENT).toString() 任務內容
         }
 
         btn_confirm.setOnClickListener(new View.OnClickListener() {

@@ -20,5 +20,6 @@
         android:layout_gravity="center_horizontal"
         android:textColor="@color/button_material_dark"
         android:textAlignment="center"
-        android:textSize="@dimen/abc_text_size_large_material" />
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:gravity="center_horizontal" />
 </LinearLayout>

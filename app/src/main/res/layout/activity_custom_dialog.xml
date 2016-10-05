@@ -47,19 +47,39 @@
                 android:textColor="@android:color/white"
                 android:layout_alignParentLeft="true"
                 android:layout_margin="5dp" />
+
         </RelativeLayout>
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/text_content"
-            android:text="這是您客製化的視窗!"
-            android:textColor="@android:color/black"
-            android:minHeight="100dp"
-            android:padding="30dp"
-            android:background="@android:color/white"
-            android:gravity="center_vertical" />
+            android:layout_height="150dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:id="@+id/text_content"
+                android:text="這是您客製化的視窗!"
+                android:textColor="@android:color/black"
+                android:minHeight="100dp"
+                android:padding="30dp"
+                android:background="@android:color/white"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/abc_text_size_large_material" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="~來自一位很適合你的人"
+                android:id="@+id/textView21"
+                android:gravity="right"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:textColor="@color/button_material_dark"
+                android:paddingTop="4dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="4dp"
+                android:textIsSelectable="true" />
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
