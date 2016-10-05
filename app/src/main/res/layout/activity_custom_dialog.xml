@@ -8,7 +8,10 @@
     android:nestedScrollingEnabled="false"
     tools:context="com.attmm.admin.projectt.first_page"
     android:id="@+id/dialogBackground"
-    android:gravity="center_vertical|center_horizontal">
+    android:gravity="center_vertical|center_horizontal"
+    android:noHistory="true"
+    android:taskAffinity=""
+    android:excludeFromRecents="true">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="330dp"
@@ -73,12 +76,13 @@
                 android:text="~來自一位很適合你的人"
                 android:id="@+id/textView21"
                 android:gravity="right"
-                android:textSize="@dimen/abc_text_size_medium_material"
+                android:textSize="15sp"
                 android:textColor="@color/button_material_dark"
                 android:paddingTop="4dp"
                 android:paddingRight="8dp"
                 android:paddingBottom="4dp"
-                android:textIsSelectable="true" />
+                android:textIsSelectable="true"
+                android:textStyle="italic" />
         </LinearLayout>
 
         <LinearLayout

@@ -33,6 +33,7 @@ public class CustomDialogActivity extends Activity implements Constant {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_custom_dialog);
+        this.setFinishOnTouchOutside(false);
 
 
         Firebase.setAndroidContext(this);
@@ -101,14 +102,12 @@ public class CustomDialogActivity extends Activity implements Constant {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(CustomDialogActivity.this,"you click cancel!",Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
         text_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(CustomDialogActivity.this,"you click close!",Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
