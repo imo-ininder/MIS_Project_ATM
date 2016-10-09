@@ -13,6 +13,7 @@ public interface Constant extends ChatConstant {
     String DELIVER_TASK_TITLE = "title";
     String DELIVER_TASK_CONTENT ="content";
     String DELIVER_TASK_ID = "id";
+    String DELIVER_TASK_LOCATION = "com.example.admin.projectt.TASK_LOCATION";
     String DELIVER_HISTORY_PATH ="com.example.admin.projectt.HISTORY_PATH";
 
 }

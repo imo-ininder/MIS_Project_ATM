@@ -99,6 +99,7 @@ public class RetrievePostService extends Service
                         intent.putExtra(DELIVER_TASK_CONTENT, rTask.getTaskContent())
                             .putExtra(DELIVER_TASK_TITLE, rTask.getTaskTittle())
                             .putExtra(DELIVER_TASK_ID, rTask.getId())
+                            .putExtra(DELIVER_TASK_LOCATION,rTask.getTaskLocation())
                             .putExtra(DELIVER_TASK_PATH, path)
                             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

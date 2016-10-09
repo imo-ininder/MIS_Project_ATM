@@ -15,9 +15,9 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="330dp"
-        android:layout_height="270dp"
+        android:layout_height="300dp"
         android:background="#ffffffff">
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="60dp"
             android:layout_margin="0dp"
@@ -25,19 +25,13 @@
             android:background="#ffff3826"
             android:id="@+id/title_bar">
 
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="X"
-                android:id="@+id/text_close"
-                android:layout_gravity="right"
-                android:layout_alignParentRight="true"
-                android:background="#00ffffff"
-                android:textColor="@android:color/white"
-                android:layout_centerVertical="true"
-                android:layout_margin="5dp"
-                android:padding="5dp" />
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/custom_dailog_image"
+                android:src="@drawable/icon6"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -51,16 +45,16 @@
                 android:layout_alignParentLeft="true"
                 android:layout_margin="5dp" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="150dp">
+            android:layout_height="180dp">
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="110dp"
                 android:id="@+id/text_content"
                 android:text="這是您客製化的視窗!"
                 android:textColor="@android:color/black"
@@ -72,9 +66,18 @@
 
             <TextView
                 android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/custom_dialog_location"
+                android:text="地點:" />
+
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:text="~來自一位很適合你的人"
-                android:id="@+id/textView21"
+                android:id="@+id/custom_dailog_sign"
                 android:gravity="right"
                 android:textSize="15sp"
                 android:textColor="@color/button_material_dark"

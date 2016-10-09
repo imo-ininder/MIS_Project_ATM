@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.firebase.client.DataSnapshot;
@@ -21,9 +21,9 @@ import com.firebase.client.ValueEventListener;
  */
 public class CustomDialogActivity extends Activity implements Constant {
     Button btn_confirm,btn_cancel;
-    TextView text_content,text_title,text_close;
+    TextView text_content,text_title,text_close,text_loaction;
 
-     RelativeLayout title_bar;
+     LinearLayout title_bar;
 
     Firebase ref;
     Bundle extras;
@@ -50,16 +50,17 @@ public class CustomDialogActivity extends Activity implements Constant {
         text_close = (TextView)findViewById(R.id.text_close);
         text_title  = (TextView)findViewById(R.id.text_title);
         text_content = (TextView)findViewById(R.id.text_content);
+        text_loaction = (TextView)findViewById(R.id.custom_dialog_location);
 
-        title_bar = (RelativeLayout) findViewById(R.id.title_bar);
+        title_bar = (LinearLayout) findViewById(R.id.title_bar);
 
         //end of init
 
         //get task information
         if(extras!= null){
-            text_title.setText("A Tool Man");
-            text_content.setText("Hi~ 可以請你"+extras.get(DELIVER_TASK_TITLE).toString());
-            //extras.get(DELIVER_TASK_CONTENT).toString() 任務內容
+            text_title.setText(extras.getString(DELIVER_TASK_TITLE));
+            text_content.setText(extras.getString(DELIVER_TASK_CONTENT));
+            text_loaction.append(extras.getString(DELIVER_TASK_LOCATION));
         }
 
         btn_confirm.setOnClickListener(new View.OnClickListener() {
