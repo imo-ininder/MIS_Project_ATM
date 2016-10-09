@@ -62,7 +62,10 @@
                 android:padding="30dp"
                 android:background="@android:color/white"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/abc_text_size_large_material" />
+                android:textSize="@dimen/abc_text_size_large_material"
+                android:password="false"
+                android:maxLines="3"
+                android:nestedScrollingEnabled="true" />
 
             <TextView
                 android:layout_width="match_parent"
